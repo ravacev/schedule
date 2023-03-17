@@ -24,6 +24,8 @@ class selectWork():
     
 
     result = list(mycursor.fetchall())
+    
+    mydb.close()
 
 
 

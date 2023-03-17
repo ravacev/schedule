@@ -22,9 +22,19 @@ app=Flask(__name__)
 def home():
 
     try:
+        mydb.connect()
 
-        result = query.selectWork.result
-        row = query.selectWork.row
+        mycursor = mydb.cursor()
+
+        mycursor.execute(''' select COUNT(*) from status where state_order = "PENDIENTE" ''')
+        
+        row = list(mycursor.fetchone())
+
+        mycursor.execute(''' CALL `schedule`.`GetSelectSchedule`() ''')
+        
+        result = list(mycursor.fetchall())
+        
+        mydb.close()
 
         title = 'Agenda'
         return render_template('index.html', title=title, result=result, row=row[0], column=len(result[0]))
@@ -34,146 +44,149 @@ def home():
 #Modulo agenda para agregar los casos
 @app.route("/agenda/",methods = ['GET', 'POST'])
 def modf():
-
-    comment_form = forms.CommentForm(request.form)
-    
-    if ( request.method == 'POST' and comment_form.validate() ):
-            
-        if ('insertQuery' in request.form):
+    try:
+        comment_form = forms.CommentForm(request.form)
         
-            values = []
-
-            values.append(request.form.get('id_ot'))
-
-            values.append(request.form.get('num_ticket'))
-
-            values.append(request.form.get('affect_clients'))
-
-            date = datetime.now().strftime('%Y-%m-%d')
-
-            values.append(date)
-
-            values.append(request.form.get('cierre'))
-            if values[4] == '': values[4] = None
-
-            values.append(request.form.get('status'))
-
-            values.append(request.form.get('reason'))
-
-            values.append(request.form.get('priority'))
-
-            values.append(request.form.get('afectacion'))
-
-            values.append(None)
-
-            values.append(request.form.get('dep'))
-
-            values.append(request.form.get('zone'))
-
-            values.append(request.form.get('barrio'))
-
-            values.append(request.form.get('name_nap'))
-
-            values.append(request.form.get('name_nap'))
-
-            values.append(request.form.get('fase'))
-
-            values.append(request.form.get('issue'))
-
-            values.append(request.form.get('coord'))
-
-            values.append(None)
-
-            values.append(request.form.get('team'))
-
-            values.append(request.form.get('cuadrilla'))
-
-            i = 0
-
-            for item in values:
-                if item == 'None':
-                    values[i] = None
-
-                i += 1
+        if ( request.method == 'POST' and comment_form.validate() ):
+                
+            if ('insertQuery' in request.form):
             
-            # query.insertWork(values)
-        if ('updateQuery' in request.form):
+                values = []
+
+                values.append(request.form.get('id_ot'))
+
+                values.append(request.form.get('num_ticket'))
+
+                values.append(request.form.get('affect_clients'))
+
+                date = datetime.now().strftime('%Y-%m-%d')
+
+                values.append(date)
+
+                values.append(request.form.get('cierre'))
+                if values[4] == '': values[4] = None
+
+                values.append(request.form.get('status'))
+
+                values.append(request.form.get('reason'))
+
+                values.append(request.form.get('priority'))
+
+                values.append(request.form.get('afectacion'))
+
+                values.append(None)
+
+                values.append(request.form.get('dep'))
+
+                values.append(request.form.get('zone'))
+
+                values.append(request.form.get('barrio'))
+
+                values.append(request.form.get('name_nap'))
+
+                values.append(request.form.get('name_nap'))
+
+                values.append(request.form.get('fase'))
+
+                values.append(request.form.get('issue'))
+
+                values.append(request.form.get('coord'))
+
+                values.append(None)
+
+                values.append(request.form.get('team'))
+
+                values.append(request.form.get('cuadrilla'))
+
+                i = 0
+
+                for item in values:
+                    if item == 'None':
+                        values[i] = None
+
+                    i += 1
+                
+                # query.insertWork(values)
+            if ('updateQuery' in request.form):
+            
+                values = []
+
+                values.append(request.form.get('id_ot'))
+
+                values.append(request.form.get('num_ticket'))
+
+                values.append(request.form.get('affect_clients'))
+
+                date = datetime.now().strftime('%Y-%m-%d')
+
+                values.append(date)
+
+                values.append(request.form.get('cierre'))
+                if values[4] == '': values[4] = None
+
+                values.append(request.form.get('status2'))
+
+                values.append(request.form.get('reason2'))
+
+                values.append(request.form.get('priority2'))
+
+                values.append(request.form.get('afectacion2'))
+
+                values.append(None)
+
+                values.append(request.form.get('dep2'))
+
+                values.append(request.form.get('zone2'))
+
+                values.append(request.form.get('barrio2'))
+
+                values.append(request.form.get('name_nap'))
+
+                values.append(request.form.get('name_nap'))
+
+                values.append(request.form.get('fase2'))
+
+                values.append(request.form.get('issue2'))
+
+                values.append(request.form.get('coord'))
+
+                values.append(None)
+
+                values.append(request.form.get('team2'))
+
+                values.append(request.form.get('cuadrilla2'))
+
+                i = 0
+
+                for item in values:
+                    if item == 'None':
+                        values[i] = None
+
+                    i += 1
+                
+                result = query.updateWork(values)
+
+        mydb.connect()
+
+        mycursor = mydb.cursor()
+
+        mycursor.execute(''' select COUNT(*) from status where state_order = "PENDIENTE" ''')
         
-            values = []
+        row = list(mycursor.fetchone())
 
-            values.append(request.form.get('id_ot'))
+        mycursor.execute(''' CALL `schedule`.`GetSelectSchedule`() ''')
+        
+        result = list(mycursor.fetchall())
+        
+        mydb.close()
 
-            values.append(request.form.get('num_ticket'))
+        title = 'Modificar agenda'
 
-            values.append(request.form.get('affect_clients'))
 
-            date = datetime.now().strftime('%Y-%m-%d')
-
-            values.append(date)
-
-            values.append(request.form.get('cierre'))
-            if values[4] == '': values[4] = None
-
-            values.append(request.form.get('status2'))
-
-            values.append(request.form.get('reason2'))
-
-            values.append(request.form.get('priority2'))
-
-            values.append(request.form.get('afectacion2'))
-
-            values.append(None)
-
-            values.append(request.form.get('dep2'))
-
-            values.append(request.form.get('zone2'))
-
-            values.append(request.form.get('barrio2'))
-
-            values.append(request.form.get('name_nap'))
-
-            values.append(request.form.get('name_nap'))
-
-            values.append(request.form.get('fase2'))
-
-            values.append(request.form.get('issue2'))
-
-            values.append(request.form.get('coord'))
-
-            values.append(None)
-
-            values.append(request.form.get('team2'))
-
-            values.append(request.form.get('cuadrilla2'))
-
-            i = 0
-
-            for item in values:
-                if item == 'None':
-                    values[i] = None
-
-                i += 1
-            
-            print('asdas')
-
-            result = query.updateWork(values)
-
-            print(result)
-            
-    mydb.connect()
-            
-    mycursor = mydb.cursor()
-
-    result = mycursor.execute(''' CALL `schedule`.`GetSelectSchedule`() ''')
+        return render_template('agenda.html', title=title, form=comment_form, result=result, row=row[0], column=len(result[0]))
+    except:
+        return render_template('error.html')
     
-    result = list(mycursor.fetchall())
-    row = query.selectWork.row
-
-    title = 'Modificar agenda'
-
-
-    return render_template('agenda.html', title=title, form=comment_form, result=result, row=row[0], column=len(result[0]))
-
 #Modulo para extraer dato por JSON para DELETE
 @app.route("/agenda/<string:jobData>", methods=['POST'])
 def modfDelete(jobData):
@@ -185,7 +198,7 @@ def modfDelete(jobData):
 
     print()
 
-    # query.deleteWork(jobData[1])
+    query.deleteWork(jobData[1])
 
     return redirect('/agenda/')
 
