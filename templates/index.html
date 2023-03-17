@@ -1,0 +1,70 @@
+{% extends 'base/base.html' %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-6 text-center mb-5">
+					<h2 class="heading-section">Agenda Diaria</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h4 class="text-center mb-4">OFS Red</h4>
+					<div class="table-wrap">
+						<table class="table">
+						<thead class="thead-primary">
+							
+						<!--Aqui se imprime el titulo de la agenda-->
+						<tr>
+							<th>OT</th>
+							<th>Ticket</th>
+							<th>Nap</th>
+							<th>Inconveniente</th>
+							<th>Fase</th>
+							<th>Coordenadas</th>
+							<th>Fecha de Reclamo</th>
+							<th>Clientes sin servicio</th>
+							<th>Dias pendientes</th>
+							<th>Prioridad</th>
+							<th>Team</th>
+							<th>Cuadrilla</th>
+							<th>Departamento</th>
+							<th>Zona</th>
+							<th>Barrio</th>
+							<th>Estado</th>
+							<th>Fecha de resolucion</th>
+							<th>Motivo</th>
+							<th>Afectacion</th>
+							<th>Status</th>
+						</tr>
+						</thead>    
+						<tbody>
+						
+						<!--Macro de _macro para imprimir la cantidad de N veces el registro de la agenda-->
+
+							{% from '_macro.html' import show_table %}
+									
+							{{ show_table(result, row, column) }}
+
+					</table>
+					</div>
+
+					<!--Botones que rederidigen a las otras apps-->
+					<p><a href="agenda" class="btn btn-primary">Modificar Agenda</a></p>
+					<p><a href="sendSchedule" class="btn btn-primary">Enviar Agenda</a></p>
+					<p><a href="#" class="btn btn-primary">Descagar Agenda</a></p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/popper.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/main.js"></script>
+
+{% endblock %}

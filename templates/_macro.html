@@ -1,0 +1,55 @@
+<!-- Macro para imprimir la tabla en index -->
+{% macro show_table(result, row, column) %}
+    
+    {% for i in range(row) %}
+        <tr>
+            {% for j in range(column) %}
+                <td>{{ result[i][j] }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+
+{% endmacro %}
+
+<!-- Macro para imprimir la tabla seleccionable en agenda -->
+{% macro show_schedule(result, row, column) %}
+    
+    {% for i in range(row) %}
+        <tr id="fila{{ i }}">
+            <!-- <td><input type="checkbox" id="checkbox{{i}}"></td> -->
+            {% for j in range(column) %}
+                <td>{{ result[i][j] }}</td>
+            {% endfor %}
+            <td><input type="image" name="delete" src="../static/img/delete.png" style="width: 20px; height: 20px;"></td>
+            <td><input type="image" name="update" src="../static/img/edit.png" style="width: 20px; height: 20px;"></td>
+        </tr>
+    {% endfor %}
+
+{% endmacro %}
+
+<!-- Macro para validaciones en la agenda -->
+{% macro render_schedule(field) %}
+
+        <td>{{ field(**kwargs)|safe }}</td>
+        {% if field.errors %}
+            <ul>
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+{% endmacro %}
+
+<!-- Macro para enviar correo electronico -->
+{% macro sendMessage(result, row, column) %}
+
+    {% for i in range(row) %}
+    <tr>
+        {% for j in range(column) %}
+            <td>{{ result[i][j] }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+
+{% endmacro %}

@@ -1,0 +1,54 @@
+Prueba 1
+
+Inserts
+
+INSERT INTO work (id_ot, num_ticket, affect_clients) VALUES ();
+INSERT INTO date (date_demand, date_done, work_id_ot) VALUES ();
+INSERT INTO status (state_order, reason, priority, down_users, event_type, work_id_ot) VALUES ();
+INSERT INTO work_crew (team_name, group_name, zone_desc_id_dep) VALUES ();
+INSERT INTO nap_desc (name_nap, fase, issue, coord, zone_desc_id_dep) VALUES ();
+INSERT INTO zone_desc (id_dep, name_dep, name_city, name_district, desc_nap, work_id_ot) VALUES ();
+
+------------------------------------------------------------------------
+
+Prueba 2
+
+Inserts
+
+INSERT INTO work (id_ot, num_ticket, zone_desc_id_dep) VALUES ();
+INSERT INTO date (date_demand, date_done, work_id_ot) VALUES ();
+INSERT INTO status (state_order, reason, priority, down_users, event_type, work_id_ot) VALUES ();
+INSERT INTO work_crew (team_name, group_name, zone_desc_id_dep) VALUES ();
+INSERT INTO nap_desc (name_nap, fase, issue, coord, zone_desc_id_dep) VALUES ();
+INSERT INTO zone_desc (id_dep, name_dep, name_city, name_district, desc_nap) VALUES ();
+
+OT
+Ticket
+Nap
+Inconveniente
+Fase
+Coordenadas
+Fecha de Reclamo
+Clientes sin servicio
+Dias pendientes
+Prioridad
+Team
+Cuadrilla
+Departamento
+Zona
+Barrio
+Estado
+Fecha de resolucion
+Motivo
+Afectacion
+Status
+
+	
+	
+	
+	DELETE FROM nap_desc WHERE num_ticket = var_num_ticket;
+	DELETE FROM crew WHERE num_ticket = var_num_ticket;
+    DELETE FROM zone_desc WHERE num_ticket = var_num_ticket;
+    DELETE FROM date WHERE num_ticket = var_num_ticket;
+	DELETE FROM status WHERE num_ticket = var_num_ticket;
+    DELETE FROM work WHERE num_ticket = var_num_ticket;
