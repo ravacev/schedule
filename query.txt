@@ -52,3 +52,14 @@ Status
     DELETE FROM date WHERE num_ticket = var_num_ticket;
 	DELETE FROM status WHERE num_ticket = var_num_ticket;
     DELETE FROM work WHERE num_ticket = var_num_ticket;
+
+
+	w.id_ot, w.num_ticket, UPPER(nd.summ_nap), UPPER(nd.issue), UPPER(nd.fase), nd.coord, dt.date_demand, 
+	w.affect_clients, datediff(now(), dt.date_demand) AS 'dias pendientes', UPPER(st.priority), UPPER(cw.partner_name), 
+	UPPER(cw.group_name), UPPER(zd.name_dep), UPPER(zd.name_city), UPPER(zd.name_district), UPPER(st.state_order),
+	dt.date_done, UPPER(st.reason), st.down_users
+
+dt.date_demand = date_format(now(), '%Y%m%d')
+
+clima
+fin de jornada

@@ -16,6 +16,9 @@ mydb = mysql.connector.connect(
     autocommit=True
 )
 
+def all_upper(my_list):
+    return [x.upper() for x in my_list]
+
 #Menu principal de la app, unicamente visualizacion
 app=Flask(__name__)
 @app.route('/')
@@ -155,13 +158,13 @@ def modf():
                 values.append(request.form.get('team2'))
 
                 values.append(request.form.get('cuadrilla2'))
-
+                
                 i = 0
 
                 for item in values:
                     if item == 'None':
                         values[i] = None
-
+                        
                     i += 1
                 
                 result = query.updateWork(values)
