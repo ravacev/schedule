@@ -4,26 +4,26 @@ mydb = mysql.connector.connect(
     host='127.0.0.1',
     user='admin',
     password='password',
-    database='schedule'
+    database='schedule',
+    autocommit=True
 )
 
 
 class selectWork():
-
+    
+    mydb.connect()
 
     mycursor = mydb.cursor()
 
     mycursor.execute(''' select COUNT(*) from status where state_order = "PENDIENTE" ''')
-
+    
     row = list(mycursor.fetchone())
 
 
     mycursor.execute(''' CALL `schedule`.`GetSelectSchedule`() ''')
+    
 
     result = list(mycursor.fetchall())
-
-
-    mydb.close()
 
 
 

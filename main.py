@@ -6,6 +6,15 @@ from flask import session
 import smtp, smtp2
 import json
 from datetime import datetime
+import mysql.connector
+
+mydb = mysql.connector.connect(
+    host='127.0.0.1',
+    user='admin',
+    password='password',
+    database='schedule',
+    autocommit=True
+)
 
 #Menu principal de la app, unicamente visualizacion
 app=Flask(__name__)
@@ -150,8 +159,14 @@ def modf():
             result = query.updateWork(values)
 
             print(result)
+            
+    mydb.connect()
+            
+    mycursor = mydb.cursor()
 
-    result = query.selectWork.result
+    result = mycursor.execute(''' CALL `schedule`.`GetSelectSchedule`() ''')
+    
+    result = list(mycursor.fetchall())
     row = query.selectWork.row
 
     title = 'Modificar agenda'
@@ -198,4 +213,4 @@ def sendSchedule():
 
 if __name__ == '__main__':
     #DEBUG is SET to TRUE. CHANGE FOR PROD
-    app.run(host='192.168.100.14',port=8000,debug=True)
+    app.run(host='127.0.0.1',port=8000,debug=True)
