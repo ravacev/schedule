@@ -7,6 +7,7 @@ import smtp, smtp2
 import json
 from datetime import datetime
 import mysql.connector
+from mysql.connector.errors import Error
 
 mydb = mysql.connector.connect(
     host='127.0.0.1',
@@ -15,9 +16,6 @@ mydb = mysql.connector.connect(
     database='schedule',
     autocommit=True
 )
-
-def all_upper(my_list):
-    return [x.upper() for x in my_list]
 
 #Menu principal de la app, unicamente visualizacion
 app=Flask(__name__)
@@ -187,7 +185,8 @@ def modf():
 
 
         return render_template('agenda.html', title=title, form=comment_form, result=result, row=row[0], column=len(result[0]))
-    except:
+    except mysql.connector.Error as err:
+        print("Something went wrong: {}".format(err))
         return render_template('error.html')
     
 #Modulo para extraer dato por JSON para DELETE

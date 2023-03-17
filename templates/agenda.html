@@ -2,6 +2,12 @@
 
 {% block content %}
 
+<script>
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+
 	<section class="ftco-section">
 		<div class="container">
 			<div class="row justify-content-center">
@@ -22,7 +28,7 @@
 							<th>Ticket</th>
 							<th>Nap</th>
 							<th>Inconveniente</th>
-							<th>Etapa Fase</th>
+							<th>Fase</th>
 							<th>Coordenadas</th>
 							<th>Fecha de Reclamo</th>
 							<th>Clientes sin servicio</th>
@@ -109,7 +115,7 @@
 								<td>
 									<select name=team id="team" onchange="cambia_cuadrilla()" class="form-select"> 
 										<option value="0" selected>Seleccione... </option>
-										<option value="1">Team Nucleo</option>
+										<option value="1">Nucleo</option>
 										<option value="2">Hansa </option>
 										<option value="3">Hansa INT </option>
 										<option value="4">Bulls</option>
@@ -234,7 +240,7 @@
 									<td>
 										<select name="team2" id="team2" onchange="cambia_team()" class="form-select"> 
 											<option value="0" selected>Seleccione... </option>
-											<option value="1">Team Nucleo</option>
+											<option value="1">Nucleo</option>
 											<option value="2">Hansa </option>
 											<option value="3">Hansa INT </option>
 											<option value="4">Bulls</option>
