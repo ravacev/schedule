@@ -8,6 +8,7 @@ import json
 from datetime import datetime
 import mysql.connector
 from mysql.connector.errors import Error
+from flask_wtf import CSRFProtect
 
 mydb = mysql.connector.connect(
     host='127.0.0.1',
@@ -17,8 +18,11 @@ mydb = mysql.connector.connect(
     autocommit=True
 )
 
-#Menu principal de la app, unicamente visualizacion
 app=Flask(__name__)
+app.secret_key = ['my_secret_key']
+csft = CSRFProtect(app)
+
+#Menu principal de la app, unicamente visualizacion
 @app.route('/')
 def home():
 
@@ -45,6 +49,7 @@ def home():
 #Modulo agenda para agregar los casos
 @app.route("/agenda/",methods = ['GET', 'POST'])
 def modf():
+    
     try:
         comment_form = forms.CommentForm(request.form)
         
@@ -107,7 +112,8 @@ def modf():
 
                     i += 1
                 
-                # query.insertWork(values)
+                query.insertWork(values)
+                
             if ('updateQuery' in request.form):
             
                 values = []
