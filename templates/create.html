@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="../static/css/login.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-  <!-- <script src="../static/js/login.js"></script> -->
 </head>
 <body class="central">
 
@@ -29,7 +28,7 @@
   
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   
-      <h1>Login</h1>
+      <h1>Register</h1>
       <div class="content">
         <div class="input-field">
           {% from '_macro.html' import validate_login %}
@@ -38,17 +37,19 @@
         <div class="input-field">
           {{ validate_login(form.password, placeholder="Password") }}
         </div>
-        <a href="/login" class="link">Olvidaste tu contraseña?</a>
+        <div class="input-field">
+            {{ validate_login(form.email, placeholder="Email", autocomple="nope") }}
+        </div>
       </div>
       <div class="action">
-        <button onclick="window.location.href='/create';" id="create">Register</button>
-        <button type="submit">Sign in</button>
+        <button type="submit">Register</button>
+        <button onclick="window.location.href='/login';" id="create">Login</button>
       </div>
     </form>
   </div>
   <!-- partial -->
 
-  <footer>
+    <footer>
       <div class="container">
           <div class="row">
               <p class="copyright text-muted">&copy; Nicolas Ravetti</p>

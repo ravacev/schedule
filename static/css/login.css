@@ -5,7 +5,7 @@
   -webkit-font-smoothing: antialiased;
 }
 
-body {
+body.central {
   background: #00B0EB;
   font-family: 'Rubik', sans-serif;
 }

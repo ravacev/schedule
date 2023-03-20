@@ -1,14 +1,22 @@
 from flask import Flask,redirect,url_for,render_template
-import forms
-import query
 from flask import request
 from flask import session
-import smtp, smtp2
-import json
+from flask import make_response
+from flask import flash
+from flask import g
 from datetime import datetime
-import mysql.connector
 from mysql.connector.errors import Error
+from models import create_password, check_password
+
+
+from config import DevelopmentConfig
+
 from flask_wtf import CSRFProtect
+import smtp, smtp2
+import query
+import forms
+import json
+import mysql.connector
 
 mydb = mysql.connector.connect(
     host='127.0.0.1',
@@ -19,12 +27,34 @@ mydb = mysql.connector.connect(
 )
 
 app=Flask(__name__)
-app.secret_key = ['my_secret_key']
-csft = CSRFProtect(app)
+app.config.from_object(DevelopmentConfig)
+csrf_token = CSRFProtect(app)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.before_request
+def before_request():
+    if 'username' not in session and request.endpoint in ['modf']:
+        return redirect(url_for('login'))
+    elif 'username' in session and request.endpoint in ['login']:
+        return redirect(url_for('home'))
+    
+        
+@app.after_request
+def after_request(response):
+    # print(g.test)
+    return response
 
 #Menu principal de la app, unicamente visualizacion
 @app.route('/')
 def home():
+    
+    # custome_cookie = request.cookies.get('custome_cookie', 'Undefined')
+    # print (custome_cookie)
+    
+    # print(g.test)
 
     try:
         mydb.connect()
@@ -195,6 +225,42 @@ def modf():
         print("Something went wrong: {}".format(err))
         return render_template('error.html')
     
+#Modulo Login
+@app.route("/login/", methods=['GET', 'POST'])
+def login():
+    
+    login_form = forms.LoginForm(request.form)
+    if (request.method == 'POST' and login_form.validate()):
+        username = login_form.username.data
+        password = login_form.password.data
+        
+        data = query.authenticator(username)
+        print(data[3])
+        password  = check_password(data[3], password)
+        
+        print(password)
+        
+        if data[1] is not None and password:
+            session['username'] = login_form.username.data
+            success_message = 'Bienvenido {}'.format(username)
+            flash(success_message)
+            
+            return redirect(url_for('home'))
+        else:
+            error_message = 'Usuario o password no validos!'
+            flash(error_message)
+        
+    title = 'Login'
+        
+    return render_template('login.html', form=login_form, title=title)
+
+#Modulo Logout
+@app.route("/logout/")
+def logout():
+    if 'username' in session:
+        session.pop('username')
+    return redirect(url_for('login'))
+
 #Modulo para extraer dato por JSON para DELETE
 @app.route("/agenda/<string:jobData>", methods=['POST'])
 def modfDelete(jobData):
@@ -210,16 +276,11 @@ def modfDelete(jobData):
 
     return redirect('/agenda/')
 
-#Modulo logins
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    login_form = forms.LoginForm(request.form)
-    if request.method == 'POST' and login_form.validate():
-        session['username'] = login_form.username.data
-    return render_template('login.html', form=login_form)
-
-# @app.route("/cookie")
-# def cookie():
+@app.route("/cookie")
+def cookie():
+    response = make_response(render_template('cookie.html'))
+    response.set_cookie('custome_cookie', 'Nicolas')
+    return response
 
 #Modulo enviar correo de la agenda
 @app.route("/sendSchedule")
@@ -232,6 +293,35 @@ def sendSchedule():
     smtp2.sendEmail(email_message)
     return redirect('/')
 
+@app.route("/ajax-login", methods=['POST'])
+def ajax_login():
+    print(request.form)
+    username = request.form['username']
+    response = {'status': 200, 'username': username, 'id': 1}
+    
+    return json.dumps(response)
+
+@app.route("/create", methods=['GET', 'POST'])
+def create_user():
+    
+    create_form = forms.RegisterForm(request.form)
+    if (request.method == 'POST' and create_form.validate()):
+        
+        username = create_form.username.data
+        password = create_password(create_form.password.data)
+        email = create_form.email.data
+        
+        query.createUser(username, password, email)
+        success_message = 'Su usuario ha sido creado {}'.format(username)
+        flash(success_message)
+        
+        return redirect(url_for('login'))
+    title = 'Login'
+        
+    return render_template('create.html', form=create_form, title=title)
+
 if __name__ == '__main__':
     #DEBUG is SET to TRUE. CHANGE FOR PROD
-    app.run(host='127.0.0.1',port=8000,debug=True)
+    csrf_token.init_app(app)
+    
+    app.run(port=8000)

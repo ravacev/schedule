@@ -1,4 +1,5 @@
 import mysql.connector
+import datetime
 
 mydb = mysql.connector.connect(
     host='127.0.0.1',
@@ -116,3 +117,43 @@ def updateWork(values):
     mydb.close()
 
     return row
+
+def authenticator(username):
+    
+    mydb.connect()
+
+    mycursor = mydb.cursor()
+
+    sql = '''
+        select * from users where user = %s
+    '''
+    
+    val = [(username)]
+
+    mycursor.execute(sql, val)
+    
+    data = list(mycursor.fetchone())
+
+    mydb.close()
+    
+    return data
+    
+def createUser(username, password, email):
+    
+    mydb.connect()
+
+    mycursor = mydb.cursor()
+    
+    time = datetime.datetime.now()
+
+    sql = '''
+        insert into users (user, email, password, created_date) values (%s, %s, %s, %s)
+    '''
+    
+    val = (username, email, password, time)
+
+    mycursor.execute(sql, val)
+    mydb.commit()
+
+
+    mydb.close()

@@ -1,5 +1,6 @@
-from wtforms import Form, StringField, TextField, validators
+from wtforms import Form, StringField, TextField, validators, PasswordField
 from wtforms.fields.html5 import EmailField
+from flask_wtf import FlaskForm
 
 class CommentForm(Form):
     id_ot = StringField('OT',
@@ -32,13 +33,37 @@ class CommentForm(Form):
                             validators.length(min=7, max=45, message='Ingrese un NAP valido.')
                             ]
                            )
-
-
    
 class LoginForm(Form):
-    login_form = StringField('LOGIN',
+    username = StringField('username',
                            [
-                            validators.DataRequired(message='El login es requerido.'),
-                            validators.length(min=8, max=15, message='Ingrese un login valido.')
+                            validators.DataRequired(message='El username es requerido.'),
+                            validators.length(min=4, max=35, message='Ingrese un username valido.')
+                            ]
+                           )
+    password = PasswordField('password',
+                           [
+                            validators.DataRequired(message='La contrasena es requerida.'),
+                            validators.length(min=4, max=35, message='Ingrese una contrasena valida.')
+                            ]
+                           )
+    
+class RegisterForm(Form):
+    username = StringField('username',
+                           [
+                            validators.DataRequired(message='El username es requerido.'),
+                            validators.length(min=4, max=35, message='Ingrese un username valido.')
+                            ]
+                           )
+    password = PasswordField('password',
+                           [
+                            validators.DataRequired(message='La contrasena es requerida.'),
+                            validators.length(min=4, max=35, message='Ingrese una contrasena valida.')
+                            ]
+                           )
+    email = EmailField('email',
+                           [
+                            validators.DataRequired(message='El email es requerido'),
+                            validators.length(min=4, max=35, message='Ingrese una contrasena valida.')
                             ]
                            )

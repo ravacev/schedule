@@ -1,13 +1,22 @@
-/*
+// $(document).ready(function(){
 
-inspiration: 
-https://dribbble.com/shots/2292415-Daily-UI-001-Day-001-Sign-Up
+//   function ajax_login(){
+//     $.ajax({
+//       url: '/login',
+//       data: $('form').serialize(),
+//       type: 'POST', 
+//       success: function(response){
+//         console.log(response);
+//       },
+//       error: function(error){
+//         console.log(error);
+//       }
+//     });
+//   }
 
-*/
+//   $('#login-form').submit(function(event){
+//     event.preventDefault();
+//     ajax_login();
+//   })
 
-let form = document.querySelecter('form');
-
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  return false;
-});
+// });
