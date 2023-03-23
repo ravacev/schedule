@@ -1,8 +1,4 @@
 import os
 
-class Config(object):
+class DevelopmentConfig(object):
     SECRET_KEY = 'my_secret_key'
-    
-class DevelopmentConfig(Config):
-    DEBUG = True
-    

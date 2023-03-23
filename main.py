@@ -6,10 +6,9 @@ from flask import flash
 from flask import g
 from datetime import datetime
 from mysql.connector.errors import Error
-from models import create_password, check_password
-
-
-from config import DevelopmentConfig
+from models import create_password, check_password, User
+from decorators import login_app
+from flask_login import login_required, LoginManager, logout_user, current_user, login_user, AnonymousUserMixin
 
 from flask_wtf import CSRFProtect
 import smtp, smtp2
@@ -25,10 +24,17 @@ mydb = mysql.connector.connect(
     database='schedule',
     autocommit=True
 )
-
 app=Flask(__name__)
-app.config.from_object(DevelopmentConfig)
 csrf_token = CSRFProtect(app)
+app.config['SECRET_KEY'] = 'ENTER_SECRET_KEY'
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return session['username']
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -36,26 +42,27 @@ def page_not_found(e):
 
 @app.before_request
 def before_request():
-    if 'username' not in session and request.endpoint in ['modf']:
-        return redirect(url_for('login'))
-    elif 'username' in session and request.endpoint in ['login']:
-        return redirect(url_for('home'))
+    # access = [
+    #     'home', 'modf', 'logout', 'modfDelete', 'cookie', 'sendSchedule'
+    # ]
+    # if 'username' not in session and request.endpoint in access:
+    #     return redirect(url_for('login'))
+    # elif 'username' in session and request.endpoint in ['login']:
+    #     return redirect(url_for('home'))
     
+    pass
         
 @app.after_request
 def after_request(response):
-    # print(g.test)
     return response
 
 #Menu principal de la app, unicamente visualizacion
 @app.route('/')
 def home():
     
-    # custome_cookie = request.cookies.get('custome_cookie', 'Undefined')
-    # print (custome_cookie)
+    username = session.get('username')
+    isadmin = query.isadmin(username)
     
-    # print(g.test)
-
     try:
         mydb.connect()
 
@@ -72,8 +79,9 @@ def home():
         mydb.close()
 
         title = 'Agenda'
-        return render_template('index.html', title=title, result=result, row=row[0], column=len(result[0]))
-    except:
+        return render_template('index.html', title=title, result=result, row=row[0], column=len(result[0]), isadmin=isadmin)
+    except mysql.connector.Error as err:
+        print("Something went wrong: {}".format(err))
         return render_template('error.html')
 
 #Modulo agenda para agregar los casos
@@ -82,7 +90,6 @@ def modf():
     
     try:
         comment_form = forms.CommentForm(request.form)
-        
         if ( request.method == 'POST' and comment_form.validate() ):
                 
             if ('insertQuery' in request.form):
@@ -231,23 +238,28 @@ def login():
     
     login_form = forms.LoginForm(request.form)
     if (request.method == 'POST' and login_form.validate()):
+            
         username = login_form.username.data
         password = login_form.password.data
-        
-        data = query.authenticator(username)
-        print(data[3])
-        password  = check_password(data[3], password)
-        
-        print(password)
-        
-        if data[1] is not None and password:
-            session['username'] = login_form.username.data
-            success_message = 'Bienvenido {}'.format(username)
-            flash(success_message)
-            
-            return redirect(url_for('home'))
-        else:
-            error_message = 'Usuario o password no validos!'
+        try:
+            data = query.authenticator(username)
+            hashpass = data[2]
+            password  = check_password(hashpass, password)
+            if data[1] is not None and password:
+                session['loggedin'] = True
+                session['id'] = data[0]
+                session['username'] = username
+
+                success_message = 'Bienvenido {}'.format(username)
+                flash(success_message)
+                print("Session")
+                return redirect(url_for('home'))
+            else:
+                error_message = 'Usuario o password no validos!'
+                flash(error_message)
+        except:
+            print('Error')
+            error_message = 'Algo ha salido mal, vuelva a intentar!'
             flash(error_message)
         
     title = 'Login'

@@ -8256,3 +8256,128 @@ h1, h2, h3, h4, h5,
   font-size: inherit;
   cursor: inherit;
   line-height: inherit;}
+
+
+
+
+
+
+
+
+/* Aca corta pelotudo */
+
+*{
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  list-style: none;
+  box-sizing: border-box;
+  font-family: 'Rubik', sans-serif;
+}
+
+nav{
+  background: linear-gradient(#21b7b9, #ffff);
+  height: 80px;
+  width: 100%;
+  display: inline-block;
+}
+
+.enlace{
+  position: absolute;
+  padding: 20px 50px;
+}
+.logo{
+  height: 40px;
+}
+nav ul{
+  float: right;
+  margin-right: 10px;
+}
+nav ul li{
+  display: inline-block;
+  line-height: 80px;
+  margin: 0 5px;
+}
+nav ul li a{
+  color: #fff;
+  font-size: 12px;
+  padding: 7px 7px;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+li a.active, li a:hover{
+  background: #258eb1;
+  transition: .5s;
+}
+.checkbtn{
+  font-size: 30px;
+  color: #fff;
+  float: right;
+  line-height: 80px;
+  margin-right: 40px;
+  cursor: pointer;
+  display: none;
+}
+#check{
+  display: none;
+}
+section{
+  background: url(fondo.jpg) no-repeat;
+  background-size: cover;
+  background-position: center center;
+  height: calc(100vh - 80px);
+}
+
+@media (max-width: 952px){
+  .enlace{
+      padding-left: 20px;
+  }
+  nav ul li a{
+      font-size: 16px;
+  }
+}
+
+@media (max-width: 858px){
+  .checkbtn{
+      display: block;
+  }
+  ul{
+      position: fixed;
+      width: 100%;
+      height: 100vh;
+      background: #2c3e50;
+      top: 0px;
+      left: -100%;
+      text-align: center;
+      transition: all .5s;
+  }
+  nav ul li{
+      display: block;
+      margin: 50px 0;
+      line-height: 30px;
+  }
+  nav ul li a{
+      font-size: 20px;
+  }
+  li a:hover, li a.active{
+      background: none;
+      color: #005cbf;
+  }
+  #check:checked ~ ul{
+      left:0;
+  }
+}
+
+.zoom {
+  padding: 10px;
+  background-color: green;
+  transition: transform .2s; /* Animation */
+  width: 10px;
+  height: 10px;
+  margin: 0 auto;
+  
+}
+
+.zoom:hover {
+  transform: scale(1.2); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}

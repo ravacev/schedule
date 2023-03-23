@@ -8,18 +8,10 @@
     }
 </script>
 
-	<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
 	<section class="ftco-section">
 		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-md-6 text-center mb-5">
-					<h2 class="heading-section">Modificar Agenda</h2>
-				</div>
-			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<h4 class="text-center mb-4">OFS Red</h4>
 					<div class="table-wrap">
 						<table class="table">
 						<thead class="thead-primary">
@@ -32,9 +24,9 @@
 							<th>Inconveniente</th>
 							<th>Fase</th>
 							<th>Coordenadas</th>
-							<th>Fecha de Reclamo</th>
-							<th>Clientes sin servicio</th>
-							<th>Dias pendientes</th>
+							<th>Ingreso</th>
+							<th>Clientes Afectados</th>
+							<th>Demora</th>
 							<th>Prioridad</th>
 							<th>Team</th>
 							<th>Cuadrilla</th>
@@ -86,6 +78,7 @@
 									<option value="4">Fase 4</option>
 									<option value="5">Fase 5</option>
 									<option value="Edificio">Edificio</option>
+									<option value="Edificio">Ampliacion</option>
 									</select>
 								</td>
 
@@ -210,6 +203,7 @@
 										<option value="4">Fase 4</option>
 										<option value="5">Fase 5</option>
 										<option value="Edificio">Edificio</option>
+										<option value="Edificio">Ampliacion</option>
 										</select>
 									</td>
 	
@@ -310,7 +304,6 @@
 					</div>
 					<!--Botones que rederidigen a las otras apps-->
 					<p><button type="submit" class="btn btn-primary" id="show">Nueva Tarea</button></p>
-					<p><a href="/" class="btn btn-primary">Menu Principal</a></p>
 				</div>
 			</div>
 		</div>

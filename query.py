@@ -9,7 +9,6 @@ mydb = mysql.connector.connect(
     autocommit=True
 )
 
-
 class selectWork():
     
     mydb.connect()
@@ -37,11 +36,11 @@ def insertWork(values):
     mycursor = mydb.cursor()
 
     sql = '''
-        CALL PutInsertSchedule(%s, %s, %s, 
-        %s, %s, 
-        %s, %s, %s, %s, %s, 
-        %s, %s, %s, 
-        %s, %s, %s, %s, %s, 
+        CALL PutInsertSchedule(%s, %s, %s,
+        %s, %s,
+        %s, %s, %s, %s, %s,
+        %s, %s, %s,
+        %s, %s, %s, %s, %s,
         %s, %s, %s);
     '''
 
@@ -125,7 +124,7 @@ def authenticator(username):
     mycursor = mydb.cursor()
 
     sql = '''
-        select * from users where user = %s
+        select * from users where username = %s
     '''
     
     val = [(username)]
@@ -145,15 +144,54 @@ def createUser(username, password, email):
     mycursor = mydb.cursor()
     
     time = datetime.datetime.now()
-
+    flag = False
+    
     sql = '''
-        insert into users (user, email, password, created_date) values (%s, %s, %s, %s)
+        insert into users (username, password, email, isadmin, created_date) values (%s, %s, %s, %s, %s)
     '''
     
-    val = (username, email, password, time)
+    val = (username, password, email, flag, time)
 
     mycursor.execute(sql, val)
     mydb.commit()
 
 
     mydb.close()
+    
+def isadmin(username):
+    
+    mydb.connect()
+
+    mycursor = mydb.cursor()
+
+    sql = '''
+        select isadmin from users where username = %s
+    '''
+    
+    val = [(username)]
+
+    mycursor.execute(sql, val)
+    
+    data = list(mycursor.fetchone())
+
+    mydb.close()
+    
+    return data[0]
+
+def test(username, password):
+    
+    mydb.connect()
+
+    mycursor = mydb.cursor()
+
+    sql = ''' SELECT idusers, username, password FROM users WHERE username = %s AND password = %s '''
+
+    val = [(username, password)]
+
+    mycursor.execute(sql, val)
+
+    account = dict(mycursor.fetchone())
+
+    mydb.close()
+
+    return account

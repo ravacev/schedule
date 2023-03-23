@@ -2,9 +2,9 @@
 {% macro show_table(result, row, column) %}
     
     {% for i in range(row) %}
-        <tr>
+        <tr >
             {% for j in range(column) %}
-                <td>{{ result[i][j] }}</td>
+                <td class="zoom">{{ result[i][j] }}</td>
             {% endfor %}
         </tr>
     {% endfor %}
@@ -18,7 +18,7 @@
         <tr id="fila{{ i }}">
             <!-- <td><input type="checkbox" id="checkbox{{i}}"></td> -->
             {% for j in range(column) %}
-                <td>{{ result[i][j] }}</td>
+                <td class="zoom">{{ result[i][j] }}</td>
             {% endfor %}
             <td><input type="image" name="delete" src="../static/img/delete.png" style="width: 20px; height: 20px;"></td>
             <td><input type="image" name="update" src="../static/img/edit.png" style="width: 20px; height: 20px;"></td>
