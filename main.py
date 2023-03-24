@@ -23,7 +23,7 @@ mydb = mysql.connector.connect(
     host='127.0.0.1',
     user='admin',
     password='password',
-    database='schedule',
+    database='testing',
     autocommit=True
 )
 
@@ -78,12 +78,12 @@ def home():
         
         row = list(mycursor.fetchone())
 
-        mycursor.execute(''' CALL `schedule`.`GetSelectSchedule`() ''')
+        mycursor.execute(''' CALL `GetSelectSchedule`() ''')
         
         result = list(mycursor.fetchall())
         
         mydb.close()
-
+        
         title = 'Agenda'
         return render_template('index.html', title=title, result=result, row=row[0], column=len(result[0]), isadmin=isadmin)
     except mysql.connector.Error as err:
@@ -226,7 +226,7 @@ def modf():
         
         row = list(mycursor.fetchone())
 
-        mycursor.execute(''' CALL `schedule`.`GetSelectSchedule`() ''')
+        mycursor.execute(''' CALL `GetSelectSchedule`() ''')
         
         result = list(mycursor.fetchall())
         
@@ -344,8 +344,6 @@ def ajax_login():
     return json.dumps(response)
 
 @app.route("/create", methods=['GET', 'POST'])
-@login_required
-@admin_required
 def create_user():
     
     create_form = forms.RegisterForm(request.form)
