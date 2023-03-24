@@ -27,8 +27,6 @@ class selectWork():
     
     mydb.close()
 
-
-
 def insertWork(values):
 
     mydb.connect()
@@ -178,20 +176,16 @@ def isadmin(username):
     
     return data[0]
 
-def test(username, password):
+class test():
     
     mydb.connect()
 
-    mycursor = mydb.cursor()
+    mycursor = mydb.cursor(dictionary=True)
 
-    sql = ''' SELECT idusers, username, password FROM users WHERE username = %s AND password = %s '''
+    sql = ''' SELECT * FROM users '''
 
-    val = [(username, password)]
+    mycursor.execute(sql)
 
-    mycursor.execute(sql, val)
-
-    account = dict(mycursor.fetchone())
+    account = mycursor.fetchall()
 
     mydb.close()
-
-    return account

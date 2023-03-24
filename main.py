@@ -7,7 +7,7 @@ from flask import g
 from datetime import datetime
 from mysql.connector.errors import Error
 from models import create_password, check_password, User
-from decorators import login_app
+from decorators import admin_required
 from flask_login import login_required, LoginManager, logout_user, current_user, login_user, AnonymousUserMixin
 
 from flask_wtf import CSRFProtect
@@ -17,6 +17,8 @@ import forms
 import json
 import mysql.connector
 
+from scripts import user_create
+
 mydb = mysql.connector.connect(
     host='127.0.0.1',
     user='admin',
@@ -24,17 +26,23 @@ mydb = mysql.connector.connect(
     database='schedule',
     autocommit=True
 )
+
 app=Flask(__name__)
 csrf_token = CSRFProtect(app)
-app.config['SECRET_KEY'] = 'ENTER_SECRET_KEY'
+app.secret_key = 'mysecretkey'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+users = user_create.users
+
 @login_manager.user_loader
 def load_user(user_id):
-    return session['username']
+    for user in users:
+        if user.id == int(user_id):
+            return user
+    return None
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -49,7 +57,6 @@ def before_request():
     #     return redirect(url_for('login'))
     # elif 'username' in session and request.endpoint in ['login']:
     #     return redirect(url_for('home'))
-    
     pass
         
 @app.after_request
@@ -58,11 +65,10 @@ def after_request(response):
 
 #Menu principal de la app, unicamente visualizacion
 @app.route('/')
+@login_required
 def home():
-    
     username = session.get('username')
     isadmin = query.isadmin(username)
-    
     try:
         mydb.connect()
 
@@ -86,6 +92,8 @@ def home():
 
 #Modulo agenda para agregar los casos
 @app.route("/agenda/",methods = ['GET', 'POST'])
+@login_required
+@admin_required
 def modf():
     
     try:
@@ -235,32 +243,41 @@ def modf():
 #Modulo Login
 @app.route("/login/", methods=['GET', 'POST'])
 def login():
-    
     login_form = forms.LoginForm(request.form)
     if (request.method == 'POST' and login_form.validate()):
-            
-        username = login_form.username.data
-        password = login_form.password.data
         try:
-            data = query.authenticator(username)
-            hashpass = data[2]
-            password  = check_password(hashpass, password)
-            if data[1] is not None and password:
-                session['loggedin'] = True
-                session['id'] = data[0]
-                session['username'] = username
-
-                success_message = 'Bienvenido {}'.format(username)
-                flash(success_message)
-                print("Session")
-                return redirect(url_for('home'))
-            else:
-                error_message = 'Usuario o password no validos!'
-                flash(error_message)
+            username = login_form.username.data
+            password = (login_form.password.data)
+            for user in users:
+                if user.username == username and check_password(user.password, password):
+                    login_user(user)
+                    session['username'] = username
+                    session['isadmin'] = bool(query.isadmin(username))
+                    success_message = 'Bienvenido {}'.format(username)
+                    flash(success_message)
+                    
+                    return redirect(url_for('home'))
         except:
-            print('Error')
-            error_message = 'Algo ha salido mal, vuelva a intentar!'
+            error_message = 'Usuario o password no validos!'
             flash(error_message)
+        # try:
+        #     data = query.authenticator(username)
+        #     if data[1] is not None and check_password(data[2], password):
+        #         session['loggedin'] = True
+        #         session['id'] = data[0]
+        #         session['username'] = username
+        #         session['password'] = password
+
+        #         success_message = 'Bienvenido {}'.format(username)
+        #         flash(success_message)
+        #         return redirect(url_for('home'))
+        #     else:
+        #         error_message = 'Usuario o password no validos!'
+        #         flash(error_message)
+        # except:
+        #     print('Error')
+        #     error_message = 'Algo ha salido mal, vuelva a intentar!'
+        #     flash(error_message)
         
     title = 'Login'
         
@@ -268,13 +285,23 @@ def login():
 
 #Modulo Logout
 @app.route("/logout/")
+@login_required
 def logout():
     if 'username' in session:
         session.pop('username')
+        session.clear()
+    if 'id' in session:
+        session.pop('id')
+        session.clear()
+    if 'password' in session:
+        session.pop('password')
+        session.clear()
     return redirect(url_for('login'))
 
 #Modulo para extraer dato por JSON para DELETE
 @app.route("/agenda/<string:jobData>", methods=['POST'])
+@login_required
+@admin_required
 def modfDelete(jobData):
     jobData = json.loads(jobData)
     data = jobData
@@ -288,14 +315,16 @@ def modfDelete(jobData):
 
     return redirect('/agenda/')
 
-@app.route("/cookie")
-def cookie():
-    response = make_response(render_template('cookie.html'))
-    response.set_cookie('custome_cookie', 'Nicolas')
-    return response
+# @app.route("/cookie")
+# def cookie():
+#     response = make_response(render_template('cookie.html'))
+#     response.set_cookie('custome_cookie', 'Nicolas')
+#     return response
 
 #Modulo enviar correo de la agenda
 @app.route("/sendSchedule")
+@login_required
+@admin_required
 def sendSchedule():
 
     result = query.selectWork.result
@@ -306,6 +335,7 @@ def sendSchedule():
     return redirect('/')
 
 @app.route("/ajax-login", methods=['POST'])
+@login_required
 def ajax_login():
     print(request.form)
     username = request.form['username']
@@ -314,6 +344,8 @@ def ajax_login():
     return json.dumps(response)
 
 @app.route("/create", methods=['GET', 'POST'])
+@login_required
+@admin_required
 def create_user():
     
     create_form = forms.RegisterForm(request.form)
