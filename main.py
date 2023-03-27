@@ -13,6 +13,7 @@ from flask_login import login_required, LoginManager, logout_user, current_user,
 from flask_wtf import CSRFProtect
 import smtp, smtp2
 import query
+from query import Work
 import forms
 import json
 import mysql.connector
@@ -27,6 +28,7 @@ mydb = mysql.connector.connect(
     autocommit=True
 )
 
+work_querys = Work()
 app=Flask(__name__)
 csrf_token = CSRFProtect(app)
 app.secret_key = 'mysecretkey'
@@ -50,13 +52,6 @@ def page_not_found(e):
 
 @app.before_request
 def before_request():
-    # access = [
-    #     'home', 'modf', 'logout', 'modfDelete', 'cookie', 'sendSchedule'
-    # ]
-    # if 'username' not in session and request.endpoint in access:
-    #     return redirect(url_for('login'))
-    # elif 'username' in session and request.endpoint in ['login']:
-    #     return redirect(url_for('home'))
     pass
         
 @app.after_request
@@ -94,8 +89,7 @@ def home():
 @app.route("/agenda/",methods = ['GET', 'POST'])
 @login_required
 @admin_required
-def modf():
-    
+def modf(): 
     try:
         comment_form = forms.CommentForm(request.form)
         if ( request.method == 'POST' and comment_form.validate() ):
@@ -157,10 +151,23 @@ def modf():
 
                     i += 1
                 
-                query.insertWork(values)
+                query.insertWork(values, session['username'])
+                return redirect(url_for('modf'))
                 
             if ('updateQuery' in request.form):
-            
+                form_keys = [ 'id_ot', 'num_ticket', 'affect_clients', 'date', 'status2',
+                                'reason2', 'priority2', 'afectacion2', 'dep2', 'zone2',
+                                'barrio2', 'name_nap', 'fase2', 'issue2', 'coord', 'team2', 'cuadrilla2'
+                ]
+
+                val = {}
+
+                for f in form_keys:
+                    val.setdefault(f, request.form.get(f))
+                    
+                                
+                
+
                 values = []
 
                 values.append(request.form.get('id_ot'))
@@ -216,8 +223,11 @@ def modf():
                         
                     i += 1
                 
-                result = query.updateWork(values)
-
+                result = work_querys.updateWork(values, session['username'])
+                return redirect(url_for('modf'))
+            
+            
+        """ 
         mydb.connect()
 
         mycursor = mydb.cursor()
@@ -230,16 +240,19 @@ def modf():
         
         result = list(mycursor.fetchall())
         
-        mydb.close()
+        mydb.close() """
 
+        row, result = query.selectWork()
+        
+        
         title = 'Modificar agenda'
 
 
         return render_template('agenda.html', title=title, form=comment_form, result=result, row=row[0], column=len(result[0]))
     except mysql.connector.Error as err:
         print("Something went wrong: {}".format(err))
-        return render_template('error.html')
-    
+        return render_template('error.html', error = err)
+
 #Modulo Login
 @app.route("/login/", methods=['GET', 'POST'])
 def login():
@@ -302,18 +315,14 @@ def logout():
 @app.route("/agenda/<string:jobData>", methods=['POST'])
 @login_required
 @admin_required
+# @csrf_token.exempt
 def modfDelete(jobData):
     jobData = json.loads(jobData)
     data = jobData
-    print()
-
     print(data)
+    query.deleteWork(jobData[1], session['username'])
 
-    print()
-
-    query.deleteWork(jobData[1])
-
-    return redirect('/agenda/')
+    return redirect(url_for('modf'))
 
 # @app.route("/cookie")
 # def cookie():

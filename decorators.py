@@ -14,3 +14,5 @@ def admin_required(f):
             pass
         return f(*args, **kws)
     return decorated_function
+        
+        
