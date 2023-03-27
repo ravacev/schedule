@@ -25,7 +25,7 @@ class user_create():
     users = []
     
     for value in range(len(test)):
-        users.append(User(id = test[value]['idusers'], username = test[value]['username'], password = test[value]['password'], email = test[value]['email'], isadmin = bool(test[value]['isadmin'])))
+        users.append(User(id = test[value]['UsersID'], username = test[value]['Username'], password = test[value]['Password'], email = test[value]['Email'], isadmin = bool(test[value]['IsAdmin']), active = bool(test[value]['Active'])))
         # users.insert(value, test[value]['idusers'], test[value]['username'], test[value]['password'], test[value]['email'], test[value]['isadmin'])
     
     mydb.close()

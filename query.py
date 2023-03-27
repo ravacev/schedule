@@ -12,9 +12,13 @@ mydb = mysql.connector.connect(
 
 class BaseDB(object):
     def __init__(self):
-        self.connector = mydb.connect()   
-        pass
-        ##eliminar el pass e inicializar db aqui
+        mysql.connector.connect(
+        host='127.0.0.1',
+        user='admin',
+        password='password',
+        database='testing',
+        autocommit=True
+        )
 
 class Work(BaseDB):
     def __init__(self):

@@ -29,6 +29,8 @@ mydb = mysql.connector.connect(
 )
 
 work_querys = Work()
+# user_querys = User()  
+
 app=Flask(__name__)
 csrf_token = CSRFProtect(app)
 app.secret_key = 'mysecretkey'
@@ -60,10 +62,10 @@ def after_request(response):
 
 #Menu principal de la app, unicamente visualizacion
 @app.route('/')
-@login_required
+# @login_required
 def home():
-    username = session.get('username')
-    isadmin = query.isadmin(username)
+    # username = session.get('username')
+    # isadmin = user_querys.isadmin(username)
     try:
         mydb.connect()
 
@@ -223,6 +225,7 @@ def modf():
                         
                     i += 1
                 
+                work_querys
                 result = work_querys.updateWork(values, session['username'])
                 return redirect(url_for('modf'))
             
