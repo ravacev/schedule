@@ -28,6 +28,11 @@ mydb = mysql.connector.connect(
     autocommit=True
 )
 
+headers = ['OT', 'Ticket', 'Nap', 'Inconveniente', 'Fase', 'Coordenadas', 'Ingreso', 
+          'Clientes', 'Afectados', 'Demora', 'Prioridad', 'Team', 'Cuadrilla', 
+          'Departamento', 'Zona', 'Barrio', 'Estado', 'Fecha de resolucion', 
+          'Motivo', 'Afectacion']
+
 work_querys = Work()
 # user_querys = User()  
 
@@ -67,30 +72,38 @@ def home():
     # username = session.get('username')
     # isadmin = user_querys.isadmin(username)
     try:
-        mydb.connect()
+        # mydb.connect()
 
-        mycursor = mydb.cursor()
-
-        mycursor.execute(''' select COUNT(*) from status where state_order = "PENDIENTE" ''')
+        # mycursor = mydb.cursor(dictionary=True)
         
-        row = list(mycursor.fetchone())
-
-        mycursor.execute(''' CALL `GetSelectSchedule`() ''')
+        # sql = (''' SELECT count(*) AS row FROM status WHERE statusDesc = 'PENDIENTE' ''')
         
-        result = list(mycursor.fetchall())
+        # mycursor.execute(sql)
         
-        mydb.close()
+        # row = (mycursor.fetchone())
+        
+        # mycursor = mydb.cursor()
+        
+        # mycursor.execute(''' CALL `GetSelectSchedule`() ''')
+        
+        # result = list(mycursor.fetchall())
+        
+        # mydb.close()
+        
+        row, result = work_querys.selectWork()
+        
+        print(row)
         
         title = 'Agenda'
-        return render_template('index.html', title=title, result=result, row=row[0], column=len(result[0]), isadmin=isadmin)
+        return render_template('index.html', title=title, result=result, row=row['row'], column=len(result[0]), headers=headers)
     except mysql.connector.Error as err:
         print("Something went wrong: {}".format(err))
         return render_template('error.html')
 
 #Modulo agenda para agregar los casos
 @app.route("/agenda/",methods = ['GET', 'POST'])
-@login_required
-@admin_required
+# @login_required
+# @admin_required
 def modf(): 
     try:
         comment_form = forms.CommentForm(request.form)

@@ -22,34 +22,29 @@ class BaseDB(object):
 
 class Work(BaseDB):
     def __init__(self):
-        #inicializar coneccion a la db desde aqui#
+        mydb.connect()
         super(Work, self).__init__()
         
     def __del__(self):
         self.connector.close()
         
     def selectWork(self):
+        mycursor = mydb.cursor(dictionary=True)
         
-        mydb.connect()
-
-        mycursor = self.connector.cursor()
-
-        mycursor.execute(''' select COUNT(*) from status where state_order = "PENDIENTE" ''')
+        mycursor.execute(''' SELECT COUNT(*) FROM status WHERE StatusDesc = "PENDIENTE" ''')
         
-        row = list(mycursor.fetchone())
-
+        row = (mycursor.fetchone())
+        
+        mycursor = mydb.cursor()
 
         mycursor.execute(''' CALL `GetSelectSchedule`() ''')
         
-
         result = list(mycursor.fetchall())
         
-        mydb.close()
-        
-        return row, result
+        return row[0], result
 
     def insertWork(self, values, username):
-        mydb.connect()
+        
 
         mycursor = mydb.cursor()
         
@@ -80,12 +75,11 @@ class Work(BaseDB):
         mycursor.execute(sql, val)
         mydb.commit()
         
-        mydb.close()
 
         return
 
     def deleteWork(self, num_ticket, username):
-        mydb.connect()
+        
 
         mycursor = mydb.cursor()
         sql = '''CALL `DeleteAllSchedule`(%s);'''
@@ -94,12 +88,11 @@ class Work(BaseDB):
         mycursor.execute(sql, val)
         mydb.commit()
         
-        mydb.close()
 
         return
 
     def updateWork(self, values, username):#esta funcion es una kk
-        mydb.connect()
+        
 
         mycursor = mydb.cursor()
         
@@ -112,7 +105,8 @@ class Work(BaseDB):
         iduser = list(mycursor.fetchone())
 
         if values[1] == None:
-            insertWork(values, iduser[0])
+            # insertWork(values, iduser[0])
+            pass
         else:
             sql = '''
                 CALL PutUpdateSchedule(%s, %s, %s, %s, %s,
@@ -141,7 +135,6 @@ class Work(BaseDB):
             row = list(mycursor.fetchone())
 
 
-        mydb.close()
 
         return row
 
@@ -151,7 +144,7 @@ class UserManager(BaseDB):
     
     def authenticator(self, username):
         
-        mydb.connect()
+        
 
         mycursor = mydb.cursor()
 
@@ -165,12 +158,11 @@ class UserManager(BaseDB):
         
         data = list(mycursor.fetchone())
 
-        mydb.close()
         
         return data
         
     def createUser(self, username, password, email): 
-        mydb.connect()
+        
 
         mycursor = mydb.cursor()
         
@@ -186,11 +178,10 @@ class UserManager(BaseDB):
         mycursor.execute(sql, val)
         mydb.commit()
 
-        mydb.close()
         
     def isadmin(self, username):
     
-        mydb.connect()
+        
 
         mycursor = mydb.cursor()
 
@@ -204,6 +195,5 @@ class UserManager(BaseDB):
         
         data = list(mycursor.fetchone())
 
-        mydb.close()
         
         return data[0]

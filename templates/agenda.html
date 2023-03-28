@@ -18,28 +18,9 @@
 							
 						<!--Aqui se imprime el titulo de la agenda-->
 						<tr>
-							<th>OT</th>
-							<th>Ticket</th>
-							<th>Nap</th>
-							<th>Inconveniente</th>
-							<th>Fase</th>
-							<th>Coordenadas</th>
-							<th>Ingreso</th>
-							<th>Clientes Afectados</th>
-							<th>Demora</th>
-							<th>Prioridad</th>
-							<th>Team</th>
-							<th>Cuadrilla</th>
-							<th>Departamento</th>
-							<th>Zona</th>
-							<th>Barrio</th>
-							<th>Estado</th>
-							<th>Fecha de resolucion</th>
-							<th>Motivo</th>
-							<th>Afectacion</th>
-							<!-- <th>Comentario</th> -->
-							<th>Eliminar</th>
-							<th>Editar</th>
+							{% for f in headers %}
+								<th>{{ f }}</th>
+							{% endfor %}
 						</tr>
 						</thead>
 						<tbody>
