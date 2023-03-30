@@ -110,9 +110,22 @@
 
 									{{ render_schedule(form.priority, class="") }}
 
-									{{ render_schedule(form.team, onchange='cambia_cuadrilla()') }}
-
-									{{ render_schedule(form.cuadrilla) }}
+									<td>
+										<select name=team id="team" onchange="cambia_cuadrilla()" class="form-select"> 
+											<option value="0" selected>Seleccione... </option>
+											<option value="1">Nucleo</option>
+											<option value="2">Hansa </option>
+											<option value="3">Hansa INT </option>
+											<option value="4">Bulls</option>
+											<option value="5">Dunkel</option>
+										</select>
+									</td>
+	
+									<td>
+										<select name=cuadrilla id="cuadrilla" class="form-select"> 
+											<option value="-">- 
+										</select> 
+									</td>
 
 									{{ render_schedule(form.dep) }}
 
