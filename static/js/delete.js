@@ -17,14 +17,18 @@ document.querySelectorAll("input[type=image][name=delete]").forEach(link => {
 
           console.log(jobData);
 
-          const request = new XMLHttpRequest
+          // let str = "";
+          // for (i = 0; i < (elementosFila.length - 2); i++) {
+          //   str = str + "\n" + jobData[i];
+          // }
+          // console.log(str);
+          // navigator.clipboard.writeText(str);
 
+
+          const request = new XMLHttpRequest();
           request.open(`POST`, `/agenda/${JSON.stringify(jobData)}`);
           request.send();
-
           jobData = []
-          
-      
         }
         else {
           console.log('Nuestra casilla de verificación no está marcada!');

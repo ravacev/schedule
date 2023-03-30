@@ -16,7 +16,6 @@
     
     {% for i in range(row) %}
         <tr id="fila{{ i }}">
-            <!-- <td><input type="checkbox" id="checkbox{{i}}"></td> -->
             {% for j in range(column) %}
                 <td class="zoom">{{ result[i][j] }}</td>
             {% endfor %}
