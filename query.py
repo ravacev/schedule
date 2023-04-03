@@ -21,8 +21,7 @@ class Database(object):
         )
         self.cursor = self.connection.cursor()
                
-class Work(Database):
-    
+class Work(Database):  
     def __init__(self):
         super(Work, self).__init__()
              
@@ -36,40 +35,45 @@ class Work(Database):
         self.cursor.execute(''' CALL `GetSelectSchedule`() ''')
         result = list(self.cursor.fetchall())
         column = len(result[0])
+        
+        if len(result[0]) == 0 or row['count'] == 0:
+            column = 0
 
         return row['count'], result, column
 
     def insertWork(self, values, iduser):
+        self.values = values
+        self.iduser = iduser
+        
+        self.connection.reconnect()
+        self.mycursor = self.connection.cursor()
         sql = '''
-            CALL InsertSchedule(%s, %s, %s, %s,
-            %s, %s,
-            %s, %s, %s, %s, %s,
+            CALL InsertSchedule(%s, %s, %s, 
             %s, %s, %s,
-            %s, %s, %s, %s, %s,
+            %s, %s, 
+            %s, %s, %s,
+            %s, %s, %s,
             %s, %s, %s);
         '''
 
-        val = (values[0], values[1], values[2], iduser[0],
-            values[3], values[4], 
-            values[5], values[6], values[7], values[8], values[9], 
-            values[10], values[11], values[12], 
-            values[13], values[14], values[15], values[16], values[17], 
-            values[18], values[19], values[20])
+        val = (self.values['id_ot'], self.values['num_ticket'], self.values['name_nap'],
+            self.values['issue'], self.values['fase'], self.values['coord'], 
+            self.values['affect_clients'], self.values['priority'], 
+            self.values['team'], self.values['cuadrilla'], self.values['dep'], 
+            self.values['zone'], self.values['barrio'], self.values['status'], 
+            self.values['reason'], self.values['afectacion'], self.iduser)
 
-        mycursor.execute(sql, val)
-        connection.commit()
-        
+        self.mycursor.execute(sql, val)
+        self.connection.commit()
 
-        return
-
-    def deleteWork(self, TicketID, userid):
+    def deleteWork(self, TicketID, iduser):
         self.TicketID = TicketID
-        self.userid = userid
+        self.iduser = iduser
         
         self.connection.reconnect()
         self.mycursor = self.connection.cursor()
         sql = (f'''
-                UPDATE work, status SET work.UsersID = {self.userid}, status.StatusDesc = 'ELIMINADO' 
+                UPDATE work, status SET work.UsersID = {self.iduser}, status.StatusDesc = 'ELIMINADO' 
                 WHERE work.StatusCode = status.StatusCode AND work.TicketID = {self.TicketID}
             ''')
 
@@ -78,39 +82,32 @@ class Work(Database):
 
         return
 
-    def updateWork(self, values, username):#esta funcion es una kk
+    def updateWork(self, values, iduser):
         self.values = values
-        self.username = username
+        self.iduser = iduser
+
 
         self.connection.reconnect()
         self.mycursor = self.connection.cursor()
-        sql = ''' SELECT UsersID FROM users WHERE username = %s '''
-        val = [(self.username)]
+        sql = '''
+            CALL PutUpdateSchedule(%s, %s, %s, 
+            %s, %s, %s,
+            %s, %s, 
+            %s, %s, %s,
+            %s, %s, %s, %s,
+            %s, %s, %s, %s);
+        '''
+
+        val = (self.values['id_ot'], self.values['num_ticket'], self.values['name_nap'],
+            self.values['issue2'], self.values['fase2'], self.values['coord'], 
+            self.values['affect_clients'], self.values['priority2'], 
+            self.values['team2'], self.values['cuadrilla2'], self.values['dep2'], 
+            self.values['zone2'], self.values['barrio2'], self.values['status2'], datetime.datetime.now(),
+            self.values['reason2'], self.values['afectacion2'], self.iduser, values['workID'])
+
         self.mycursor.execute(sql, val)
-        iduser = list(self.mycursor.fetchone())
-
-        if values[1] == None:
-            # insertWork(values, iduser[0])
-            pass
-        else:
-            sql = '''
-                CALL PutUpdateSchedule(%s, %s, %s, %s, %s,
-                %s, %s, 
-                %s, %s, %s, %s, %s, 
-                %s, %s, %s, 
-                %s, %s, %s, %s, %s, 
-                %s, %s, %s);
-            '''
-            val = (values['id_ot'], values['num_ticket'], values['name_nap'], values['issue2'], iduser['fase2'],
-                values['coord'], values['affect_clients'], 
-                values['priority2'], values[6], values[7], values[8], values[9], 
-                values[10], values[11], values[12], 
-                values[13], values[14], values[15], values[16], values[17], 
-                values[18], values[19], values[20])
-
-            self.mycursor.execute(sql, val)
-            self.connection.commit()
-            
+        self.connection.commit()
+        
 
 class UserSetting(Database):
     def __init__(self):
@@ -146,7 +143,7 @@ class UserSetting(Database):
 
         self.mycursor.execute(sql, val)
         self.connection.commit()
-
+        
     def isadmin(self, username):
         self.username = username
 

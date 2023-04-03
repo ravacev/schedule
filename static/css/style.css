@@ -8297,6 +8297,7 @@ nav ul li{
   display: inline-block;
   line-height: 80px;
   margin: 0 5px;
+  
 }
 nav ul li a{
   color: #fff;
@@ -8308,6 +8309,9 @@ nav ul li a{
 li a.active, li a:hover{
   background: #258eb1;
   transition: .5s;
+}
+.class{
+  display:none;
 }
 .checkbtn{
   font-size: 30px;

@@ -20,22 +20,18 @@ import mysql.connector
 
 from scripts import user_create
 
-mydb = mysql.connector.connect(
-    host='127.0.0.1',
-    user='admin',
-    password='password',
-    database='testing',
-    autocommit=True
-)
-
 stamp = ['OT', 'Ticket', 'Nap', 'Inconveniente', 'Fase', 'Coordenadas', 'Ingreso', 
           'Clientes Afectados', 'Demora', 'Prioridad', 'Team', 'Cuadrilla', 
           'Departamento', 'Zona', 'Barrio', 'Estado', 'Fecha de resolucion', 
           'Motivo', 'Afectacion', 'Eliminar', 'Editar']
 
+stamp_index = ['OT', 'Ticket', 'Nap', 'Inconveniente', 'Fase', 'Coordenadas', 'Ingreso', 
+          'Clientes Afectados', 'Demora', 'Prioridad', 'Team', 'Cuadrilla', 
+          'Departamento', 'Zona', 'Barrio', 'Estado', 'Fecha de resolucion', 
+          'Motivo', 'Afectacion']
+
 work_querys = Work()
 user_mgm = UserSetting()
-# user_querys = User()  
 
 app=Flask(__name__)
 csrf_token = CSRFProtect(app)
@@ -46,7 +42,6 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 users = user_create.users
-
 @login_manager.user_loader
 def load_user(user_id):
     for user in users:
@@ -60,8 +55,10 @@ def page_not_found(e):
 
 @app.before_request
 def before_request():
-    pass
-        
+        # if 'username' in session and request.endpoint in ['login']:
+        #     return redirect(url_for('home'))
+        pass
+    
 @app.after_request
 def after_request(response):
     return response
@@ -73,103 +70,33 @@ def home():
     username = session.get('username')
     isadmin = user_mgm.isadmin(username)
     try:
-        row, result = work_querys.selectWork()
+        row, result, column = work_querys.selectWork()
 
         title = 'Agenda'
-        return render_template('index.html', title=title, result=result, row=row, column=len(result[0]), stamp=stamp, isadmin=isadmin)
+        return render_template('index.html', title=title, result=result, row=row, column=column, stamp=stamp_index, isadmin=isadmin)
     except mysql.connector.Error as err:
         print("Something went wrong: {}".format(err))
         return render_template('error.html')
 
 #Modulo agenda para agregar los casos
 @app.route("/agenda/",methods = ['GET', 'POST'])
-# @login_required
-# @admin_required
-def modf(): 
+@login_required
+@admin_required
+def modf():
     try:
         comment_form = forms.CommentForm(request.form)
         if ( request.method == 'POST' and comment_form.validate() ):
                 
             if ('insertQuery' in request.form):
-            
-                values = []
-
-                values.append(request.form.get('id_ot'))
-
-                values.append(request.form.get('num_ticket'))
-
-                values.append(request.form.get('affect_clients'))
-
-                date = datetime.now().strftime('%Y-%m-%d')
-
-                values.append(date)
-
-                values.append(request.form.get('cierre'))
-                if values[4] == '': values[4] = None
-
-                values.append(request.form.get('status'))
-
-                values.append(request.form.get('reason'))
-
-                values.append(request.form.get('priority'))
-
-                values.append(request.form.get('afectacion'))
-
-                values.append(None)
-
-                values.append(request.form.get('dep'))
-
-                values.append(request.form.get('zone'))
-
-                values.append(request.form.get('barrio'))
-
-                values.append(request.form.get('name_nap'))
-
-                values.append(request.form.get('name_nap'))
-
-                values.append(request.form.get('fase'))
-
-                values.append(request.form.get('issue'))
-
-                values.append(request.form.get('coord'))
-
-                values.append(None)
-
-                values.append(request.form.get('team'))
-
-                values.append(request.form.get('cuadrilla'))
-
-                i = 0
-
-                for item in values:
-                    if item == 'None':
-                        values[i] = None
-
-                    i += 1
-                
                 values = request.form.to_dict()
-                print(values)
-                # work_querys.insertWork(values, session['_user_id'])
-                return redirect(url_for('modf'))
+                work_querys.insertWork(values, session['_user_id'])
                 
+                return redirect(url_for('modf'))
             if ('updateQuery' in request.form):
-                # form_keys = [ 'id_ot', 'num_ticket', 'affect_clients', 'date', 'status2',
-                #                 'reason2', 'priority2', 'afectacion2', 'dep2', 'zone2',
-                #                 'barrio2', 'name_nap', 'fase2', 'issue2', 'coord', 'team2', 'cuadrilla2'
-                # ]
-
-                # val = {}
-
-                # for f in request.form.keys():
-                #     val.setdefault(f, request.form.get(f))
-                
                 values = request.form.to_dict()
-                print(values)
-                # result = work_querys.updateWork(values, session['_user_id'])
-                return redirect(url_for('modf'))
+                work_querys.updateWork(values, session['_user_id'])
 
         row, result, column = work_querys.selectWork()
-        
         title = 'Modificar agenda'
         return render_template('agenda.html', title=title, form=comment_form, result=result, row=row, column=column, stamp=stamp)
     except mysql.connector.Error as err:
@@ -245,14 +172,11 @@ def sendSchedule():
     smtp2.sendEmail(email_message)
     return redirect('/')
 
-@app.route("/ajax-login", methods=['POST'])
+@app.route("/update")
 @login_required
+@csrf_token.exempt
 def ajax_login():
-    print(request.form)
-    username = request.form['username']
-    response = {'status': 200, 'username': username, 'id': 1}
-    
-    return json.dumps(response)
+    return render_template('update.html')
 
 @app.route("/create", methods=['GET', 'POST'])
 def create_user():
@@ -268,7 +192,6 @@ def create_user():
         success_message = 'Su usuario ha sido creado {}'.format(username)
         flash(success_message)
         
-        return redirect(url_for('login'))
     title = 'Login'
         
     return render_template('create.html', form=create_form, title=title)
