@@ -9,11 +9,12 @@ from mysql.connector.errors import Error
 from models import create_password, check_password, User
 from decorators import admin_required
 from flask_login import login_required, LoginManager, logout_user, current_user, login_user, AnonymousUserMixin
-
 from flask_wtf import CSRFProtect
+from query import Work, UserSetting, Searching
+
+import pandas as pd
 import smtp, smtp2
 import query
-from query import Work, UserSetting
 import forms
 import json
 import mysql.connector
@@ -32,6 +33,7 @@ stamp_index = ['OT', 'Ticket', 'Nap', 'Inconveniente', 'Fase', 'Coordenadas', 'I
 
 work_querys = Work()
 user_mgm = UserSetting()
+hunt = Searching()
 
 app=Flask(__name__)
 csrf_token = CSRFProtect(app)
@@ -95,10 +97,11 @@ def modf():
             if ('updateQuery' in request.form):
                 values = request.form.to_dict()
                 work_querys.updateWork(values, session['_user_id'])
+        
 
         row, result, column = work_querys.selectWork()
         title = 'Modificar agenda'
-        return render_template('agenda.html', title=title, form=comment_form, result=result, row=row, column=column, stamp=stamp)
+        return render_template('agenda.html', title=title, form=comment_form, result=result, row=row, column=column, stamp=stamp, admin=session['username'])
     except mysql.connector.Error as err:
         print("Something went wrong: {}".format(err))
         return render_template('error.html', error = err)
@@ -149,7 +152,6 @@ def logout():
 @csrf_token.exempt
 def modfDelete(jobData):
     jobData = json.loads(jobData)
-    # print(jobData)
     work_querys.deleteWork(jobData[1], session['_user_id'])
 
     return redirect(url_for('modf'))
@@ -166,11 +168,11 @@ def modfDelete(jobData):
 @admin_required
 def sendSchedule():
 
-    row, result = work_querys.selectWork()
-
-    email_message = render_template('sendSchedule.html', result=result, row=row, column=len(result[0]))
+    row, result, column = work_querys.selectWork()
+    
+    email_message = render_template('sendSchedule.html', result=result, row=row, column=column)
     smtp2.sendEmail(email_message)
-    return redirect('/')
+    return redirect(url_for('modf'))
 
 @app.route("/update")
 @login_required
@@ -178,24 +180,72 @@ def sendSchedule():
 def ajax_login():
     return render_template('update.html')
 
-@app.route("/create", methods=['GET', 'POST'])
-def create_user():
+@app.route("/admin")
+def admin():
+    users = user_mgm.select_user()
+    tlusers = ['Username', 'Email', 'Admin', 'Created Date', 'Eliminar', 'Editar']
     
-    create_form = forms.RegisterForm(request.form)
-    if (request.method == 'POST' and create_form.validate()):
-        
-        username = create_form.username.data
-        password = create_password(create_form.password.data)
-        email = create_form.email.data
-        
-        user_mgm.createUser(username, password, email)
-        success_message = 'Su usuario ha sido creado {}'.format(username)
-        flash(success_message)
-        
+    row = len(users)
+    column = len(tlusers) - 1
+    
+    return render_template('admin.html', tlusers=tlusers, users=users, row=row, column=column)
+
+@app.route("/admin/create", methods=['GET', 'POST'])
+@login_required
+@admin_required
+def create_user():
+    try:
+        create_form = forms.RegisterForm(request.form)
+        if (request.method == 'POST' and create_form.validate()):
+            
+            username = create_form.username.data
+            password = create_password(create_form.password.data)
+            email = create_form.email.data
+            isadmin = request.form.get('admin')
+            
+            user_mgm.createUser(username, password, email, isadmin)
+            success_message = 'Su usuario ha sido creado {}'.format(username)
+            flash(success_message)
+            
+            return redirect(url_for('admin'))
+    except mysql.connector.Error as err:
+        print("Something went wrong: {}".format(err))
+        return render_template('error.html', error = err)
+            
     title = 'Login'
-        
     return render_template('create.html', form=create_form, title=title)
 
+@app.context_processor
+def base():
+    form = forms.SearchForm()
+    return dict(form=form)
+
+@app.route("/search", methods=['GET', 'POST'])
+def search():
+    form = forms.SearchForm(request.form)
+    if (request.method == 'POST' and form.validate()):
+        value = request.form.to_dict()
+        data = hunt.search(value['searched'])
+
+        data = list(filter(lambda item: str(item['Ticket']) == (value['searched']), data))
+
+        row = len(data)
+        return render_template('search.html', form=form, data=data, row=row)
+        
+    return render_template('search.html', form=form)
+
+@app.route("/download")
+def download():
+    
+    result = work_querys.download()
+    
+    print(result)
+    
+    df = pd.DataFrame(result)
+    df.to_csv('out.csv')
+    
+    return redirect(url_for('modf'))
+    
 if __name__ == '__main__':
     #DEBUG is SET to TRUE. CHANGE FOR PROD
     csrf_token.init_app(app)

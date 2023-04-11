@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, TextField, validators, PasswordField
+from wtforms import Form, StringField, TextField, validators, PasswordField, SubmitField
 from wtforms.fields.html5 import EmailField
 from flask_wtf import FlaskForm
 
@@ -67,3 +67,10 @@ class RegisterForm(Form):
                             validators.length(min=4, max=35, message='Ingrese una contrasena valida.')
                             ]
                            )
+    
+class SearchForm(Form):
+    searched = StringField('Searched', 
+                           [
+                               validators.length(min=2, max=35)
+                           ])
+    submit = SubmitField('Submit')

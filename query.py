@@ -24,7 +24,15 @@ class Database(object):
 class Work(Database):  
     def __init__(self):
         super(Work, self).__init__()
-             
+
+    def download(self):
+        self.connection.reconnect()        
+        self.cursor = self.connection.cursor(dictionary=True)
+        self.cursor.execute(''' CALL `GetSelectSchedule`() ''')
+        result = self.cursor.fetchall()
+
+        return result
+    
     def selectWork(self): 
         self.connection.reconnect()
         self.cursor = self.connection.cursor(dictionary=True)
@@ -126,11 +134,11 @@ class UserSetting(Database):
         
         return data
         
-    def createUser(self, username, password, email): 
+    def createUser(self, username, password, email, isadmin): 
         self.username = username
         self.password = password
         self.email = email
-        self.IsAdmin = True
+        self.IsAdmin = isadmin
         self.CreatedDate = datetime.datetime.now()
         self.Active = True
 
@@ -156,3 +164,29 @@ class UserSetting(Database):
         data = list(self.mycursor.fetchone())
         
         return data[0]
+
+    def select_user(self):
+        self.connection.reconnect()
+        self.cursor = self.connection.cursor()
+        self.cursor.execute(''' SELECT UsersID, Username, Email, IsAdmin, CreatedDate FROM users WHERE username <> 'adminofs' ''')
+        users = (self.cursor.fetchall())
+        
+        return users
+    
+class Searching(Database):
+    def __init__(self):
+        super(Searching, self).__init__()
+        
+    def search(self, TicketID):
+        self.TicketID = TicketID
+        
+        self.connection.reconnect()
+        self.mycursor = self.connection.cursor(dictionary=True)
+        sql = ''' CALL `testing`.`SearchAll`(); '''
+        val = [(self.TicketID)]
+        
+        self.mycursor.execute(sql)
+        data = self.mycursor.fetchall()
+        
+        return data
+        

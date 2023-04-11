@@ -20,10 +20,8 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
 </head>
 <body>
-
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
     <nav>
+		
         <input type="checkbox" id="check">
         <label for="check" class="checkbtn">
             <i class="fas fa-bars"></i>
@@ -32,30 +30,54 @@
             <img src="../static/src/logo.png" alt="" class="logo">
         </a>
         <ul>
+			
             <li><a class="active" href="/">Inicio</a></li>
-            <li><a href="#">Nosotros</a></li>
+			<li><a href="../agenda">Agenda</a></li>
+			<li><a href="admin/create">Crear</a></li>
     
-            {% if isadmin == True %}
-                <li><a href="agenda">Modificar</a></li>
-            {% endif %}
-    
-            <li><a href="/logout">Logout</a></li>
-            
         </ul>
     </nav>
+    <section class="ftco-section">
+		
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<!-- <h4 class="text-center mb-4">OFS Red</h4> -->
+					<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
-    {% with messages = get_flashed_messages()  %}
-        {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-success">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-        {% endif %}
-    {% endwith %}
+					<div class="table-wrap">
 
-    {% block content %}
-    {% endblock %}
-    
+						<table class="table">
+						<thead class="thead-primary">
+						<!--Aqui se imprime el titulo de la agenda-->
+						<tr>
+							{% for f in tlusers%}
+								<th>{{ f }}</th>
+							{% endfor %}
+						</tr>
+						</thead>    
+						<tbody>
+						
+                            <!--Macro de _macro para imprimir la cantidad de N veces el registro de la agenda-->
+                            {% from '_macro.html' import show_users %}
+                                        
+                            {{ show_users(users, row, column) }}
+                        </tbody>
+					</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		
+		<footer style="position: relative;">
+			<div class="container">
+				<div class="row">
+					<p class="copyright text-muted">&copy; Desarrollado por Nicolas Ravetti</p>
+				</div>
+			</div>
+		</footer>
+
+	</section>
 </body>
 </html>

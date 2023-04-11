@@ -12,7 +12,7 @@ def sendEmail(email_content):
 
     msg['From'] = 'redofs01@gmail.com'
 
-    recipients=['Nicolas.Ravetti@personal.com.py', 'ravetti66@gmail.com', 'Renato.Mayeregger@personal.com.py']
+    recipients=['Nicolas.Ravetti@personal.com.py', 'ravetti66@gmail.com']
 
     msg['To'] = ','.join(recipients)
 

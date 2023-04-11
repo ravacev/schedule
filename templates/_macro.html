@@ -17,6 +17,26 @@
 
 {% endmacro %}
 
+<!-- Macro para imprimir la tabla en admin -->
+{% macro show_users(result, row, column) %}
+    
+    {% for i in range(row) %}
+        <tr id="fila{{ i }}">
+            {% for j in range(column) %}
+
+                {% if j == 0 %}
+                    <td class="zoom" hidden>{{ result[i][j] }}</td>
+                {% else %}
+                    <td class="zoom">{{ result[i][j] }}</td>
+                {% endif %}
+            {% endfor %}
+            <td><input type="image" name="delete" src="../static/img/delete.png" style="width: 20px; height: 20px;"></td>
+            <td><input type="image" name="update" src="../static/img/edit.png" style="width: 20px; height: 20px;"></td>
+        </tr>
+    {% endfor %}
+
+{% endmacro %}
+
 <!-- Macro para imprimir la tabla seleccionable en agenda -->
 {% macro show_schedule(result, row, column) %}
     
@@ -75,5 +95,18 @@
         {% endfor %}
     </tr>
     {% endfor %}
+
+{% endmacro %}
+
+{% macro validate_search(field) %}
+
+        <dd>{{ field(**kwargs)|safe }}</dd>
+        {% if field.errors %}
+            <ul>
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
 {% endmacro %}
