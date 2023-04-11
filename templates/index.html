@@ -2,11 +2,8 @@
 {% block title %} {{ title }} {% endblock %}
 
 {% block content %}
-
-
-
 	<section class="ftco-section">
-
+		
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
@@ -19,25 +16,9 @@
 						<thead class="thead-primary">
 						<!--Aqui se imprime el titulo de la agenda-->
 						<tr>
-							<th>OT</th>
-							<th>Ticket</th>
-							<th>Nap</th>
-							<th>Inconveniente</th>
-							<th>Fase</th>
-							<th>Coordenadas</th>
-							<th>Ingreso</th>
-							<th>Clientes Afectados</th>
-							<th>Demora</th>
-							<th>Prioridad</th>
-							<th>Team</th>
-							<th>Cuadrilla</th>
-							<th>Departamento</th>
-							<th>Zona</th>
-							<th>Barrio</th>
-							<th>Estado</th>
-							<th>Fecha de resolucion</th>
-							<th>Motivo</th>
-							<th>Afectacion</th>
+							{% for f in stamp%}
+								<th>{{ f }}</th>
+							{% endfor %}
 						</tr>
 						</thead>    
 						<tbody>
@@ -67,5 +48,4 @@
 	<script src="../static/js/popper.js"></script>
 	<script src="../static/js/bootstrap.min.js"></script>
 	<script src="../static/js/main.js"></script>
-
 {% endblock %}

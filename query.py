@@ -1,191 +1,192 @@
 import mysql.connector
 import datetime
 
-mydb = mysql.connector.connect(
-    host='127.0.0.1',
-    user='admin',
-    password='password',
-    database='schedule',
-    autocommit=True
-)
+##mover ini de db a la clase
+# connection = mysql.connector.connect(
+#     host='127.0.0.1',
+#     user='admin',
+#     password='password',
+#     database='testing',
+#     autocommit=True
+# )
 
-class selectWork():
+class Database(object):
+    def __init__(self):
+        self.connection = mysql.connector.connect(
+            host='127.0.0.1',
+            user='admin',
+            password='password',
+            database='testing',
+            autocommit=True
+        )
+        self.cursor = self.connection.cursor()
+               
+class Work(Database):  
+    def __init__(self):
+        super(Work, self).__init__()
+
+    def download(self):
+        self.connection.reconnect()        
+        self.cursor = self.connection.cursor(dictionary=True)
+        self.cursor.execute(''' CALL `GetSelectSchedule`() ''')
+        result = self.cursor.fetchall()
+
+        return result
     
-    mydb.connect()
-
-    mycursor = mydb.cursor()
-
-    mycursor.execute(''' select COUNT(*) from status where state_order = "PENDIENTE" ''')
-    
-    row = list(mycursor.fetchone())
-
-
-    mycursor.execute(''' CALL `schedule`.`GetSelectSchedule`() ''')
-    
-
-    result = list(mycursor.fetchall())
-    
-    mydb.close()
-
-def insertWork(values):
-
-    mydb.connect()
-
-    mycursor = mydb.cursor()
-
-    sql = '''
-        CALL PutInsertSchedule(%s, %s, %s,
-        %s, %s,
-        %s, %s, %s, %s, %s,
-        %s, %s, %s,
-        %s, %s, %s, %s, %s,
-        %s, %s, %s);
-    '''
-
-    val = (values[0], values[1], values[2], 
-           values[3], values[4], 
-           values[5], values[6], values[7], values[8], values[9], 
-           values[10], values[11], values[12], 
-           values[13], values[14], values[15], values[16], values[17], 
-           values[18], values[19], values[20])
-
-    mycursor.execute(sql, val)
-    mydb.commit()
-
-
-    mydb.close()
-
-    return
-
-def deleteWork(num_ticket):
-
-    mydb.connect()
-
-    mycursor = mydb.cursor()
-
-    sql = 'CALL `schedule`.`DeleteAllSchedule`(%s);'
-    val = [(num_ticket)]
-
-    mycursor.execute(sql, val)
-    mydb.commit()
-
-
-    mydb.close()
-
-    return
-
-def updateWork(values):
+    def selectWork(self): 
+        self.connection.reconnect()
+        self.cursor = self.connection.cursor(dictionary=True)
+        self.cursor.execute(''' SELECT COUNT(*) AS count FROM status WHERE StatusDesc = "PENDIENTE" ''')
+        row = (self.cursor.fetchone())
         
-    mydb.connect()
+        self.cursor = self.connection.cursor()
+        self.cursor.execute(''' CALL `GetSelectSchedule`() ''')
+        result = list(self.cursor.fetchall())
+        column = len(result[0])
+        
+        if len(result[0]) == 0 or row['count'] == 0:
+            column = 0
 
-    mycursor = mydb.cursor()
+        return row['count'], result, column
 
-
-    if values[1] == None:
-        insertWork(values)
-    else:
+    def insertWork(self, values, iduser):
+        self.values = values
+        self.iduser = iduser
+        
+        self.connection.reconnect()
+        self.mycursor = self.connection.cursor()
         sql = '''
-            CALL PutUpdateSchedule(%s, %s, %s, %s,
+            CALL InsertSchedule(%s, %s, %s, 
+            %s, %s, %s,
             %s, %s, 
-            %s, %s, %s, %s, %s, 
-            %s, %s, %s, 
-            %s, %s, %s, %s, %s, 
+            %s, %s, %s,
+            %s, %s, %s,
             %s, %s, %s);
         '''
-        val = (values[0], values[1], values[1], values[2],
-            values[3], values[4], 
-            values[5], values[6], values[7], values[8], values[9], 
-            values[10], values[11], values[12], 
-            values[13], values[14], values[15], values[16], values[17], 
-            values[18], values[19], values[20])
 
-        mycursor.execute(sql, val)
-        mydb.commit()
+        val = (self.values['id_ot'], self.values['num_ticket'], self.values['name_nap'],
+            self.values['issue'], self.values['fase'], self.values['coord'], 
+            self.values['affect_clients'], self.values['priority'], 
+            self.values['team'], self.values['cuadrilla'], self.values['dep'], 
+            self.values['zone'], self.values['barrio'], self.values['status'], 
+            self.values['reason'], self.values['afectacion'], self.iduser)
 
-        sql = ''' select num_ticket from work where num_ticket = %s '''
+        self.mycursor.execute(sql, val)
+        self.connection.commit()
 
-        val = [(values[1])]
+    def deleteWork(self, TicketID, iduser):
+        self.TicketID = TicketID
+        self.iduser = iduser
+        
+        self.connection.reconnect()
+        self.mycursor = self.connection.cursor()
+        sql = (f'''
+                UPDATE work, status SET work.UsersID = {self.iduser}, status.StatusDesc = 'ELIMINADO' 
+                WHERE work.StatusCode = status.StatusCode AND work.TicketID = {self.TicketID}
+            ''')
 
-        mycursor.execute(sql, val)
+        self.mycursor.execute(sql)
+        self.connection.commit()
 
-        row = list(mycursor.fetchone())
+        return
+
+    def updateWork(self, values, iduser):
+        self.values = values
+        self.iduser = iduser
 
 
-    mydb.close()
+        self.connection.reconnect()
+        self.mycursor = self.connection.cursor()
+        sql = '''
+            CALL PutUpdateSchedule(%s, %s, %s, 
+            %s, %s, %s,
+            %s, %s, 
+            %s, %s, %s,
+            %s, %s, %s, %s,
+            %s, %s, %s, %s);
+        '''
 
-    return row
+        val = (self.values['id_ot'], self.values['num_ticket'], self.values['name_nap'],
+            self.values['issue2'], self.values['fase2'], self.values['coord'], 
+            self.values['affect_clients'], self.values['priority2'], 
+            self.values['team2'], self.values['cuadrilla2'], self.values['dep2'], 
+            self.values['zone2'], self.values['barrio2'], self.values['status2'], datetime.datetime.now(),
+            self.values['reason2'], self.values['afectacion2'], self.iduser, values['workID'])
 
-def authenticator(username):
+        self.mycursor.execute(sql, val)
+        self.connection.commit()
+        
+
+class UserSetting(Database):
+    def __init__(self):
+        super(UserSetting, self).__init__()
     
-    mydb.connect()
+    def authenticator(self, username):
+        self.username = username
+        
+        self.connection.reconnect()
+        self.mycursor = self.connection.cursor(dictionary=True)
+        sql = ''' SELECT * FROM users WHERE Username = %s '''
+        val = [(self.username)]
 
-    mycursor = mydb.cursor()
+        self.mycursor.execute(sql, val)
+        data = self.mycursor.fetchone()
+        
+        return data
+        
+    def createUser(self, username, password, email, isadmin): 
+        self.username = username
+        self.password = password
+        self.email = email
+        self.IsAdmin = isadmin
+        self.CreatedDate = datetime.datetime.now()
+        self.Active = True
 
-    sql = '''
-        select * from users where username = %s
-    '''
+        self.connection.reconnect()
+        self.mycursor = self.connection.cursor()
+        sql = '''
+            INSERT INTO users (Username, Password, Email, IsAdmin, CreatedDate, Active) values (%s, %s, %s, %s, %s, %s)
+        '''
+        val = (self.username, self.password, self.email, self.IsAdmin, self.CreatedDate, self.Active)
+
+        self.mycursor.execute(sql, val)
+        self.connection.commit()
+        
+    def isadmin(self, username):
+        self.username = username
+
+        self.connection.reconnect()
+        self.mycursor = self.connection.cursor()
+        sql = ''' SELECT IsAdmin FROM users WHERE username = %s '''
+        val = [(username)]
+
+        self.mycursor.execute(sql, val)
+        data = list(self.mycursor.fetchone())
+        
+        return data[0]
+
+    def select_user(self):
+        self.connection.reconnect()
+        self.cursor = self.connection.cursor()
+        self.cursor.execute(''' SELECT UsersID, Username, Email, IsAdmin, CreatedDate FROM users WHERE username <> 'adminofs' ''')
+        users = (self.cursor.fetchall())
+        
+        return users
     
-    val = [(username)]
-
-    mycursor.execute(sql, val)
-    
-    data = list(mycursor.fetchone())
-
-    mydb.close()
-    
-    return data
-    
-def createUser(username, password, email):
-    
-    mydb.connect()
-
-    mycursor = mydb.cursor()
-    
-    time = datetime.datetime.now()
-    flag = False
-    
-    sql = '''
-        insert into users (username, password, email, isadmin, created_date) values (%s, %s, %s, %s, %s)
-    '''
-    
-    val = (username, password, email, flag, time)
-
-    mycursor.execute(sql, val)
-    mydb.commit()
-
-
-    mydb.close()
-    
-def isadmin(username):
-    
-    mydb.connect()
-
-    mycursor = mydb.cursor()
-
-    sql = '''
-        select isadmin from users where username = %s
-    '''
-    
-    val = [(username)]
-
-    mycursor.execute(sql, val)
-    
-    data = list(mycursor.fetchone())
-
-    mydb.close()
-    
-    return data[0]
-
-class test():
-    
-    mydb.connect()
-
-    mycursor = mydb.cursor(dictionary=True)
-
-    sql = ''' SELECT * FROM users '''
-
-    mycursor.execute(sql)
-
-    account = mycursor.fetchall()
-
-    mydb.close()
+class Searching(Database):
+    def __init__(self):
+        super(Searching, self).__init__()
+        
+    def search(self, TicketID):
+        self.TicketID = TicketID
+        
+        self.connection.reconnect()
+        self.mycursor = self.connection.cursor(dictionary=True)
+        sql = ''' CALL `testing`.`SearchAll`(); '''
+        val = [(self.TicketID)]
+        
+        self.mycursor.execute(sql)
+        data = self.mycursor.fetchall()
+        
+        return data
+        

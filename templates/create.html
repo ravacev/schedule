@@ -5,10 +5,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
-  <link rel="stylesheet" href="../static/css/login.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 </head>
 <body class="central">
 
@@ -22,31 +22,65 @@
     {% endif %}
   {% endwith %}
   
-  <div class="login-form">
   
-    <form method="POST">
+
+  <!------ Include the above in your HEAD tag ---------->
   
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-  
-      <h1>Register</h1>
-      <div class="content">
-        <div class="input-field">
-          {% from '_macro.html' import validate_login %}
-          {{ validate_login(form.username, placeholder="user", autocomple="nope") }}
-        </div>
-        <div class="input-field">
-          {{ validate_login(form.password, placeholder="Password") }}
-        </div>
-        <div class="input-field">
-            {{ validate_login(form.email, placeholder="Email", autocomple="nope") }}
+  <form class="form-horizontal" action='' method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <fieldset>
+      <div id="legend">
+        <legend class="">Register</legend>
+      </div>
+      <div class="control-group">
+        <!-- Username -->
+        <label class="control-label"  for="username">Username</label>
+        <div class="controls">
+          <input type="text" id="username" name="username" placeholder="" class="input-xlarge">
+          <p class="help-block">Username can contain any letters or numbers, without spaces</p>
         </div>
       </div>
-      <div class="action">
-        <button type="submit">Register</button>
-        <button onclick="window.location.href='/login';" id="create">Login</button>
+   
+      <div class="control-group">
+        <!-- E-mail -->
+        <label class="control-label" for="email">E-mail</label>
+        <div class="controls">
+          <input type="text" id="email" name="email" placeholder="" class="input-xlarge">
+          <p class="help-block">Please provide your E-mail</p>
+        </div>
       </div>
-    </form>
-  </div>
+   
+      <div class="control-group">
+        <!-- Password-->
+        <label class="control-label" for="password">Password</label>
+        <div class="controls">
+          <input type="password" id="password" name="password" placeholder="" class="input-xlarge">
+          <p class="help-block">Password should be at least 4 characters</p>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <!-- Password -->
+        <label class="control-label"  for="">Admin (Confirm)</label>
+        <div class="controls">
+          <input type="radio" id="admin" name="admin" value="0" checked/>
+          <label for="">Normal</label>
+
+          <input type="radio" id="admin" name="admin" value="1"/>
+          <label for="">Admin</label>
+
+          <p class="help-block">Please select if is admin</p>
+        </div>
+      </div>
+   
+      <div class="control-group">
+        <!-- Button -->
+        <div class="controls">
+          <button class="btn">Register</button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
   <!-- partial -->
 
     <footer>

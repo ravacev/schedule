@@ -1,22 +1,21 @@
-// $(document).ready(function(){
+$(document).ready(function(){
+  function ajax_login(){
+    $.ajax({
+      url: '/ajax-login',
+      data: $('form').serialize(),
+      type: 'POST', 
+      success: function(response){
+        console.log(response);
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  }
 
-//   function ajax_login(){
-//     $.ajax({
-//       url: '/login',
-//       data: $('form').serialize(),
-//       type: 'POST', 
-//       success: function(response){
-//         console.log(response);
-//       },
-//       error: function(error){
-//         console.log(error);
-//       }
-//     });
-//   }
+  $('#dataSent').submit(function(event){
+    event.preventDefault();
+    ajax_login();
+  })
 
-//   $('#login-form').submit(function(event){
-//     event.preventDefault();
-//     ajax_login();
-//   })
-
-// });
+});

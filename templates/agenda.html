@@ -7,6 +7,7 @@
         window.history.replaceState( null, null, window.location.href );
     }
 </script>
+
 	<section class="ftco-section">
 		<div class="container">
 			<div class="row">
@@ -51,7 +52,7 @@
 						
 						<tr id="dataHide">
 						<form name="sentData" id="sentData" method="POST" >
-							<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
 							<!-- <td><input type="checkbox" name="" id=""></td> -->
 
 							{% from '_macro.html' import render_schedule   %}
@@ -178,7 +179,7 @@
 
 						<tr id="data">
 							<form name="dataSent" id="dataSent" method="POST" >
-								<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+	
 								{% from '_macro.html' import render_schedule   %}
 									{{ render_schedule(form.id_ot, size='7', class='', id="id_ot2") }}
 									{{ render_schedule(form.num_ticket, size='6', class='', id="num_ticket2") }}
@@ -317,5 +318,5 @@
 	<script src="../static/js/update.js"></script>
 	<script src="../static/js/delete.js"></script>
 
-	
-{% endblock %}
+</body>
+</html>

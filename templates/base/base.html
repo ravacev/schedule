@@ -12,9 +12,12 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
-    
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
 </head>
 <body>
 
@@ -33,12 +36,11 @@
             <li><a href="#">Nosotros</a></li>
     
             {% if isadmin == True %}
-                <li><a href="sendSchedule">Enviar Agenda</a></li>
                 <li><a href="agenda">Modificar</a></li>
-                <li><a href="#">Descargar Agenda</a></li>
             {% endif %}
     
             <li><a href="/logout">Logout</a></li>
+            
         </ul>
     </nav>
 

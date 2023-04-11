@@ -10,12 +10,13 @@ def check_password(hashed_password, password):
 
 
 class User(UserMixin):
-    def __init__(self, id, username, password, email, isadmin):
+    def __init__(self, id, username, password, email, isadmin, active):
         self.id = id
         self.username = username
         self.password = password
         self.email = email
         self.isadmin = isadmin
+        self.active = active
         
     def is_active(self):
         return True
