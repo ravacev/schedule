@@ -1,15 +1,6 @@
 import mysql.connector
 import datetime
 
-##mover ini de db a la clase
-# connection = mysql.connector.connect(
-#     host='127.0.0.1',
-#     user='admin',
-#     password='password',
-#     database='testing',
-#     autocommit=True
-# )
-
 class Database(object):
     def __init__(self):
         self.connection = mysql.connector.connect(
@@ -134,7 +125,7 @@ class UserSetting(Database):
         
         return data
         
-    def createUser(self, username, password, email, isadmin): 
+    def createUser(self, username, password, email, isadmin):
         self.username = username
         self.password = password
         self.email = email

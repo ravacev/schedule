@@ -11,15 +11,14 @@ from decorators import admin_required
 from flask_login import login_required, LoginManager, logout_user, current_user, login_user, AnonymousUserMixin
 from flask_wtf import CSRFProtect
 from query import Work, UserSetting, Searching
+from scripts import user_create
 
 import pandas as pd
 import smtp, smtp2
-import query
 import forms
 import json
 import mysql.connector
 
-from scripts import user_create
 
 stamp = ['OT', 'Ticket', 'Nap', 'Inconveniente', 'Fase', 'Coordenadas', 'Ingreso', 
           'Clientes Afectados', 'Demora', 'Prioridad', 'Team', 'Cuadrilla', 
@@ -57,9 +56,9 @@ def page_not_found(e):
 
 @app.before_request
 def before_request():
-        # if 'username' in session and request.endpoint in ['login']:
-        #     return redirect(url_for('home'))
-        pass
+    # if 'username' in session and request.endpoint in ['login']:
+    #     return redirect(url_for('home'))
+    pass
     
 @app.after_request
 def after_request(response):
@@ -181,6 +180,8 @@ def ajax_login():
     return render_template('update.html')
 
 @app.route("/admin")
+@login_required
+@admin_required
 def admin():
     users = user_mgm.select_user()
     tlusers = ['Username', 'Email', 'Admin', 'Created Date', 'Eliminar', 'Editar']
