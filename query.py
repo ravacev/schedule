@@ -10,7 +10,7 @@ class Database(object):
             database='testing',
             autocommit=True
         )
-        self.cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor(buffered=True)
                
 class Work(Database):  
     def __init__(self):
@@ -30,14 +30,27 @@ class Work(Database):
         self.cursor.execute(''' SELECT COUNT(*) AS count FROM status WHERE StatusDesc = "PENDIENTE" ''')
         row = (self.cursor.fetchone())
         
+        #Here we need to solve the problem of getting the fetchall() function from the database
+        
+        # self.cursor = self.connection.cursor()
+        # self.cursor.execute(''' CALL `GetSelectSchedule`() ''')
+        # result = list(self.cursor.fetchall())
+        # column = len(result[0])
+        
+        # if len(result[0]) == 0 or row['count'] == 0:
+        #     column = 0
+        
+        self.cursor.close()
+        
         self.cursor = self.connection.cursor()
         self.cursor.execute(''' CALL `GetSelectSchedule`() ''')
-        result = list(self.cursor.fetchall())
+        result = []
+        
+        for f in range(row['count']):
+            result.append(self.cursor.fetchone())
+
         column = len(result[0])
         
-        if len(result[0]) == 0 or row['count'] == 0:
-            column = 0
-
         return row['count'], result, column
 
     def insertWork(self, values, iduser):
