@@ -9,6 +9,7 @@ class Database(object):
             password='password',
             database='testing',
             autocommit=True
+            # TODO: Should
         )
         self.cursor = self.connection.cursor()
                
