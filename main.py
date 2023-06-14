@@ -73,6 +73,7 @@ def home():
     try:
         row, result, column = work_querys.selectWork()
         
+        print(column)
         title = 'Agenda'
         return render_template('index.html', title=title, result=result, row=row, column=column, stamp=stamp_index, isadmin=isadmin)
     except mysql.connector.Error as err:
