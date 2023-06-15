@@ -31,5 +31,5 @@ getSelectSchedule = '''
     AND
     work.StatusCode = status.StatusCode
     AND
-    work.JobID = 1661573
+    status.StatusDesc = 'PENDIENTE'
 '''

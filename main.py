@@ -72,7 +72,6 @@ def home():
     isadmin = user_mgm.isadmin(username)
     try:
         row, result, column = work_querys.selectWork()
-        print(result, row, column)
 
         title = 'Agenda'
         return render_template('index.html', title=title, result=result, row=row, column=column, stamp=stamp_index, isadmin=isadmin)

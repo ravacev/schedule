@@ -1,6 +1,6 @@
 import mysql.connector
 import datetime
-from test import getSelectSchedule
+from mysql_querys import getSelectSchedule
 
 class Database(object):
     def __init__(self):
@@ -28,14 +28,14 @@ class Work(Database):
     def selectWork(self): 
         self.connection.reconnect()
         self.cursor = self.connection.cursor(dictionary=True)
-        self.cursor.execute(''' SELECT COUNT(*) AS count FROM work WHERE JobID = 1661573 ''')
+        self.cursor.execute(''' SELECT COUNT(*) AS count FROM status WHERE StatusDesc = "PENDIENTE" ''')
         row = (self.cursor.fetchone())
         self.connection.close()
         
         
         self.connection.reconnect()
         self.cursor = self.connection.cursor()
-        self.cursor.execute(''' CALL `GetSelectSchedule`() ''')
+        self.cursor.execute(getSelectSchedule)
         result = list(self.cursor.fetchall())
         column = len(result[0])
         
