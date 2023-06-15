@@ -30,7 +30,10 @@ class Work(Database):
         self.cursor = self.connection.cursor(dictionary=True)
         self.cursor.execute(''' SELECT COUNT(*) AS count FROM work WHERE JobID = 1661573 ''')
         row = (self.cursor.fetchone())
+        self.connection.close()
         
+        
+        self.connection.reconnect()
         self.cursor = self.connection.cursor()
         self.cursor.execute(''' CALL `GetSelectSchedule`() ''')
         result = list(self.cursor.fetchall())
