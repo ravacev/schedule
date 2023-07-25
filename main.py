@@ -15,7 +15,7 @@ from query import Work, UserSetting, Searching
 from scripts import user_create
 
 import pandas as pd
-import smtp2, smtp3, smtp4
+import smtp, smtp2, smtp3
 import forms, time
 import json
 import mysql.connector
@@ -113,6 +113,7 @@ def modf():
                     email_message = render_template('resume_mail.html', values=values)
                     sender = user_mgm.authenticator(session['username'])
                     smtp2.sendEmail(email_message, values, sender)
+                    # smtp3.sendEmail(email_message, values, sender)
                     return redirect(url_for('modf'))
             if ('updateQuery' in request.form):
                 values = request.form.to_dict()
@@ -269,7 +270,8 @@ def sendSchedule():
     send_time = send_time.strftime("%d/%m/%Y, %H:%M:%S")
     
     email_message = render_template('sendSchedule.html', resume=resume, result=result, row=row, column=column, stamp=stamp_mail, send_time=send_time, keys=mail_keys)
-    smtp2.sendEmail(email_message, values, sender)
+    smtp2.sendEmail(email_message)
+    # smtp.sendEmail(email_message)
     return redirect(url_for('modf'))
 
 @app.route("/update")

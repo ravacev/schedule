@@ -1,33 +1,30 @@
 import smtplib
-import email.message
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
-from smtplib import SMTPException
+# Send mail for tickets
+smtp_server = '10.11.11.50'  # Replace with your SMTP server address
+smtp_port = 25  # Replace with the appropriate SMTP port (587 is commonly used for TLS)
+sender_email = 'agenda@personal.com.py'  # Replace with your email address
+sender_password = ''  # Replace with your email password
 
-
-def sendEmail(email_content):
+def sendEmail(body, values, sender):
+    receiver_email = [sender['Email']]  # Replace with your email address
     
-    msg = email.message.Message()
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = ','.join(receiver_email)
+    msg['Subject'] = f'Caso transferido a {values["team"]}. OT: {values["id_ot"]}, Ticket: {values["num_ticket"]}'
 
-    msg['Subject'] = 'Agenda OFS'
+    # Add the UTF-8 encoded body to the email
+    msg.attach(MIMEText(body, 'html', 'utf-8'))
 
-    msg['From'] = 'agenda@personal.com.py'
-
-    recipients=["AgendayConfirmacion@personal.com.py","InternetCorporativo@personal.com.py",
-                "MesadeayudaDEC@personal.com.py","OPERADORES_DE_HOJA_DE_RUTA@personal.com.py",
-                "OPERADORES_DE_SOPORTE@personal.com.py","CC_INTERNET@personal.com.py",
-                "Soluciones_Tecnologicas@personal.com.py","OFS_Red@personal.com.py"]
-
-    msg['To'] = ','.join(recipients)
-
-    msg.add_header('Content-Type', 'text/html')
-
-    email_content = email_content.encode('ascii', 'ignore').decode('ascii')
-
-    msg.set_payload(email_content)
-    
     try:
-        smtpObj = smtplib.SMTP('10.11.11.50', 25)
-        smtpObj.sendmail(msg['From'], recipients, msg.as_string())
-        print ("Successfully sent email")
-    except SMTPException:
-        print ("Error: unable to send email")
+        # Establish a connection to the SMTP server
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+
+            # Send the email
+            server.sendmail(sender_email, receiver_email, msg.as_string())
+        print("Email sent successfully!")
+    except Exception as e:
+        print(f"An error occurred: {e}")
