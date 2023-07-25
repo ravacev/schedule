@@ -1,5 +1,4 @@
 # schedule
-Little CRM project for testing my abilities, no website online in development
 Hi everyone!
 This project consist in a little CRM app for a TELCO company to administrate workflows on the support network.
 I made it with a Python consistent knowledge with Flask and JavaScript.
