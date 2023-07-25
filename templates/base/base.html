@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <title>{% block title %} {% endblock %}</title>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" type="x icon" href="../static/img/logo.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <nav>
+        <input type="checkbox" id="check">
+        <label for="check" class="checkbtn">
+            <i class="fas fa-bars"></i>
+        </label>
+        <a href="/" class="enlace">
+            <img src="../static/src/logo.png" alt="" class="logo">
+        </a>
+        <ul>
+            <!-- <li><a class="active" href="/">Inicio</a></li> -->
+            <!-- <li><a href="#">Nosotros</a></li> -->
+    
+            {% if isadmin == True %}
+                <li><a href="agenda">Modificar</a></li>
+            {% endif %}
+            <li><a href="../search">Buscar</a></li>
+    
+            <li><a href="/logout">Logout</a></li>
+            
+        </ul>
+    </nav>
+
+    {% with messages = get_flashed_messages()  %}
+        {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+    
+</body>
+</html>

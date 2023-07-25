@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="shortcut icon" type="x icon" href="../static/img/logo.png">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<title>{{ title }}</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<link rel="stylesheet" href="../../static/css/bootstrap.min.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+	
+	<script>
+		if ( window.history.replaceState ) {
+			window.history.replaceState( null, null, window.location.href );
+		}
+
+	</script>
+	
+
+	<nav>
+		
+        <input type="checkbox" id="check">
+        <label for="check" class="checkbtn">
+            <i class="fas fa-bars"></i>
+        </label>
+        <a href="/" class="enlace">
+            <img src="../static/src/logo.png" alt="" class="logo">
+        </a>
+        <ul>
+			
+			<li><a href="#" onclick="return false;" id="show">Agregar</a></li>
+			<li><a href="../agenda">Agenda</a></li>
+			<li><a href="../unaffectedly">Aintech</a></li>
+			<li><a href="../search">Buscar</a></li>
+			<li><a href="../sendSchedule">Enviar</a></li>
+			<li><a href="../download">Descargar</a></li>
+			{% if admin == 'adminofs' %}
+				<li><a href="../admin">Usuarios</a></li>
+			{% endif %}
+    
+        </ul>
+    </nav>
+
+				<div class="">
+					<div class="col-md-12">
+						{% with messages = get_flashed_messages()  %}
+						{% if messages %}
+							{% for message in messages %}
+								<div class="alert alert-danger">
+									{{ message }}
+								</div>
+							{% endfor %}
+						{% endif %}
+					{% endwith %}
+						<div class="table-wrap">
+							<table class="table">
+							<thead class="thead-primary">
+								
+							<!--Aqui se imprime el titulo de la agenda-->
+							<tr>
+								{% for f in stamp %}
+									<th>{{ f }}</th>
+								{% endfor %}
+							</tr>
+							</thead>
+							<tbody>
+							<!--Macro de _macro para imprimir la cantidad de N veces el registro de la agenda-->
+							<!-- Form para insertar de las tareas -->
+
+							
+							<tr id="dataHide">
+							<form name="sentData" id="sentData" method="POST" >
+								<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+	
+								{% from '_macro.html' import render_schedule   %}
+									{{ render_schedule(form.id_ot, size='7', class='') }}
+									{{ render_schedule(form.num_ticket, size='7', class='') }}
+									{{ render_schedule(form.name_nap, class='') }}
+	
+									<td>
+										<select name="issue" id="issue" class="form-select" required>
+										<option value="Corte de FO">Corte de FO</option>
+										<option value="Adecuacion en zona">Adecuacion en zona</option>
+										<option value="Alta atenuacion">Alta atenuacion</option>
+										<option value="Puertos Dañados">Puertos dañados</option>
+										<option value="Sin enfrentador">Sin enfrentador</option>
+										<option value="Con Insectos">Con Insectos</option>
+										</select>
+									</td>
+	
+									<td>
+										<select name="fase" id="fase" class="form-select" required>
+										<option value="Fase 1">Fase 1</option>
+										<option value="Fase 2">Fase 2</option>
+										<option value="Fase 3">Fase 3</option>
+										<option value="Fase 4">Fase 4</option>
+										<option value="Fase 5">Fase 5</option>
+										<option value="Edificio">Edificio</option>
+										<option value="Edificio">Ampliacion</option>
+										</select>
+									</td>
+	
+									{{ render_schedule(form.coord, size='15', class='') }}
+	
+									
+									<td>
+										<input type="date" name="datePicker" id="datePicker" min="" required>
+									</td>
+									
+									{{ render_schedule(form.affect_clients, size='10', class='') }}
+	
+									<td><input type="text" name="dias_pen" id="dias_pen"></td>
+	
+									<td>
+										<select name="priority" id="priority" class="form-select" required>
+										<option value="1">Prioridad 1</option>
+										<option value="2">Prioridad 2</option>
+										<option value="3">Prioridad 3</option>
+										<option value="4">Prioridad 4</option>
+										<option value="5">Prioridad 5</option>
+										<option value="5">Prioridad 6</option>
+										<option value="5">Prioridad 7</option>
+										<option value="5">Prioridad 8</option>
+										<option value="5">Prioridad 9</option>
+										<option value="5">Prioridad 10</option>
+										</select>
+									</td>
+	
+									<td>
+										<select name=team id="team" onchange="cambia_cuadrilla()" class="form-select"> 
+											<option value="0" selected>Seleccione... </option>
+											<option value="1">Nucleo</option>
+											<option value="2">Hansa </option>
+											<option value="3">Hansa INT </option>
+											<option value="4">Bulls</option>
+											<option value="5">Dunkel</option>
+											<option value="6">Aintech</option>
+										</select>
+									</td>
+	
+									<td>
+										<select name=cuadrilla id="cuadrilla" class="form-select"> 
+											<option value="-">- 
+										</select> 
+									</td>
+									
+									{% from '_macro.html' import show_distritos %}
+										
+									{{ show_distritos(locate, keys, size, temp) }}
+	
+									<td>
+										<select name="status" id="status" class="form-select" required>
+										<option value="Pendiente">Pendiente</option>
+										<option value="Trabajando">Trabajando</option>
+										<option value="En camino">En camino</option>
+										<option value="Cancelado">Cancelado</option>
+										<option value="Solucionado">Solucionado</option>
+										<option value="Postergado">Postergado</option>
+										</select>
+									</td>
+	
+									<td>
+										<input type="date" name="cierre" id="cierre" min="">
+									</td>
+	
+									<td>
+										<select name="reason" id="reason" class="form-select form-padding" required>
+											<option value="SIN MOTIVO">SIN MOTIVO</option>
+											<option value="TRABAJO PROGRAMADO">TRABAJO PROGRAMADO</option>
+											<option value="ACCIDENTE DE TRANSITO">ACCIDENTE DE TRANSITO</option>
+											<option value="ADECUACION">ADECUACION</option>
+											<option value="ÁRBOL CAÍDO">ÁRBOL CAÍDO</option>
+											<option value="ARMA DE FUEGO">ARMA DE FUEGO</option>
+											<option value="BUFFER DOBLADO">BUFFER DOBLADO</option>
+											<option value="CAJA DESARMADA">CAJA DESARMADA</option>
+											<option value="CAJA EN MAL ESTADO">CAJA EN MAL ESTADO</option>
+											<option value="CAMBIO DE COLUMNA ANDE">CAMBIO DE COLUMNA ANDE</option>
+											<option value="CAMBIO DE COLUMNA NORMAL">CAMBIO DE COLUMNA NORMAL</option>
+											<option value="CE CON AGUA">CE CON AGUA</option>
+											<option value="CE CON INSECTOS">CE CON INSECTOS</option>
+											<option value="DESCARGA ELÉCTRICA">DESCARGA ELÉCTRICA</option>
+											<option value="EMPALME ATENUADO">EMPALME ATENUADO</option>
+											<option value="ENERGÍA">ENERGÍA</option>
+											<option value="ERROR DE CONSTRUCCIÓN">ERROR DE CONSTRUCCIÓN</option>
+											<option value="FALLA/DETERIORO">FALLA/DETERIORO</option>
+											<option value="HARDWARE">HARDWARE</option>
+											<option value="HERRAJES DE SUJECIÓN">HERRAJES DE SUJECIÓN</option>
+											<option value="MAQUINARIA">MAQUINARIA</option>
+											<option value="NEGLIGENCIA">NEGLIGENCIA</option>
+											<option value="OBRA ANDE">OBRA ANDE</option>
+											<option value="OBRAS CIVILES">OBRAS CIVILES</option>
+											<option value="OTRA OPERADORA">OTRA OPERADORA</option>
+											<option value="PATCHCORD">PATCHCORD</option>
+											<option value="PELO ROTO">PELO ROTO</option>
+											<option value="PELO ROTO ENCAMINADO EDIFICIO/BARRIO">PELO ROTO ENCAMINADO EDIFICIO/BARRIO</option>
+											<option value="PODA ANDE">PODA ANDE</option>
+											<option value="PODA NORMAL">PODA NORMAL</option>
+											<option value="POSTE ROTO">POSTE ROTO</option>
+											<option value="QUEMAZÓN">QUEMAZÓN</option>
+											<option value="RAMA DE ÁRBOL">RAMA DE ÁRBOL</option>
+											<option value="ROBO">ROBO</option>
+											<option value="SABOTAJE">SABOTAJE</option>
+											<option value="SIN INCONVENIENTES">SIN INCONVENIENTES</option>
+											<option value="SUCIEDAD/MALA CONEXIÓN">SUCIEDAD/MALA CONEXIÓN</option>
+											<option value="TORMENTA">TORMENTA</option>
+											<option value="VEHÍCULO DE GRAN PORTE">VEHÍCULO DE GRAN PORTE</option>
+											<option value="MORDEDURA DE ROEDOR">MORDEDURA DE ROEDOR</option>
+										</select>
+									</td>
+	
+									<td>
+										<input type="number" name="afectacion" id="afectacion" size="4" min="0">
+									</td>
+
+									<td>
+										<input type="text" name="comentario" id="comentario" size="15">
+									</td>
+
+									<td>
+										<input type="date" name="agendamiento" id="agendamiento" min="">
+										<script>
+											document.getElementById("agendamiento").value = new Date().toISOString().substring(0, 10);
+										</script>
+									</td>
+	
+									<td><button type="reset" form="sentData" id="reset" class="btn btn-primary">Reset</button></td>
+									<td><button type="submit" form="sentData" class="btn btn-primary" id="insertQuery" name="insertQuery">Cargar</button></td>
+									
+									<!-- <td>
+										<input type="text" name="comentario" id="comment" size='15' required>
+									</td> -->
+									
+							</form>
+							</tr>
+	
+							<!-- Form para update de las tareas -->
+	
+							<tr id="data">
+								
+								<form name="dataSent" id="dataSent" method="POST" >
+									<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+									{% from '_macro.html' import render_schedule   %}
+	
+										<td hidden>
+											<input type="text" name="workID" id="workID" size="5" readonly>
+										</td>
+	
+										{{ render_schedule(form.id_ot, size='7', class='', id="id_ot2") }}
+										{{ render_schedule(form.num_ticket, size='7', class='', id="num_ticket2") }}
+										{{ render_schedule(form.name_nap, class='', id="name_nap2") }}
+		
+										<td>
+											<select name="issue2" id="issue2" class="form-select" required>
+											<option value="Corte de FO">Corte de FO</option>
+											<option value="Adecuacion en zona">Adecuacion en zona</option>
+											<option value="Alta atenuacion">Alta atenuacion</option>
+											<option value="Puertos Dañados">Puertos dañados</option>
+											<option value="Sin enfrentador">Sin enfrentador</option>
+											<option value="Con Insectos">Con Insectos</option>
+											</select>
+										</td>
+		
+										<td>
+											<select name="fase2" id="fase2" class="form-select" required>
+											<option value="Fase 1">Fase 1</option>
+											<option value="Fase 2">Fase 2</option>
+											<option value="Fase 3">Fase 3</option>
+											<option value="Fase 4">Fase 4</option>
+											<option value="Fase 5">Fase 5</option>
+											<option value="Edificio">Edificio</option>
+											<option value="Edificio">Ampliacion</option>
+											</select>
+										</td>
+		
+										{{ render_schedule(form.coord, size='15', class='', id="coord2") }}
+		
+										
+										<td>
+											<input type="text" name="datePicker2" id="datePicker2" min=""  required>
+		
+											<script>
+												document.getElementById("datePicker2").disabled = true;
+											</script>
+										</td>
+										
+										{{ render_schedule(form.affect_clients, size='10', class='', id="affect_clients2") }}
+		
+										<td><input type="text" name="dias_pen2" id="dias_pen2"></td>
+		
+										<td>
+											<select name="priority2" id="priority2" class="form-select" required>
+											<option value="1">Prioridad 1</option>
+											<option value="2">Prioridad 2</option>
+											<option value="3">Prioridad 3</option>
+											<option value="4">Prioridad 4</option>
+											<option value="5">Prioridad 5</option>
+											</select>
+										</td>
+		
+										<td>
+											<select name="team2" id="team2" onchange="cambia_team()" class="form-select"> 
+												<option value="0">Seleccione... </option>
+												<option value="1">Nucleo</option>
+												<option value="2">Hansa </option>
+												<option value="3">Hansa INT </option>
+												<option value="4">Bulls</option>
+												<option value="5">Dunkel</option>
+												<option value="6">Aintech</option>
+											</select>
+										</td>
+		
+										<td>
+											<select name="cuadrilla2" id="cuadrilla2" class="form-select"> 
+												<option value="-">- 
+											</select> 
+										</td>
+		
+										{% from '_macro.html' import show_distritos2 %}
+										
+										{{ show_distritos2(locate, keys, size, temp) }}
+		
+										<td>
+											<select name="status2" id="status2" class="form-select" required>
+											<option value="Pendiente">Pendiente</option>
+											<option value="Trabajando">Trabajando</option>
+											<option value="En camino">En camino</option>
+											<option value="Cancelado">Cancelado</option>
+											<option value="Solucionado">Solucionado</option>
+											<option value="Postergado">Postergado</option>
+											</select>
+										</td>
+		
+										<td>
+											<input type="date" name="cierre2" id="cierre2" min="">
+										</td>
+		
+										<td>
+											<select name="reason2" id="reason2" class="form-select form-padding" required>
+												<option value="SIN MOTIVO">SIN MOTIVO</option>
+												<option value="TRABAJO PROGRAMADO">TRABAJO PROGRAMADO</option>
+												<option value="ACCIDENTE DE TRANSITO">ACCIDENTE DE TRANSITO</option>
+												<option value="ADECUACION">ADECUACION</option>
+												<option value="ÁRBOL CAÍDO">ÁRBOL CAÍDO</option>
+												<option value="ARMA DE FUEGO">ARMA DE FUEGO</option>
+												<option value="BUFFER DOBLADO">BUFFER DOBLADO</option>
+												<option value="CAJA DESARMADA">CAJA DESARMADA</option>
+												<option value="CAJA EN MAL ESTADO">CAJA EN MAL ESTADO</option>
+												<option value="CAMBIO DE COLUMNA ANDE">CAMBIO DE COLUMNA ANDE</option>
+												<option value="CAMBIO DE COLUMNA NORMAL">CAMBIO DE COLUMNA NORMAL</option>
+												<option value="CE CON AGUA">CE CON AGUA</option>
+												<option value="CE CON INSECTOS">CE CON INSECTOS</option>
+												<option value="DESCARGA ELÉCTRICA">DESCARGA ELÉCTRICA</option>
+												<option value="EMPALME ATENUADO">EMPALME ATENUADO</option>
+												<option value="ENERGÍA">ENERGÍA</option>
+												<option value="ERROR DE CONSTRUCCIÓN">ERROR DE CONSTRUCCIÓN</option>
+												<option value="FALLA/DETERIORO">FALLA/DETERIORO</option>
+												<option value="HARDWARE">HARDWARE</option>
+												<option value="HERRAJES DE SUJECIÓN">HERRAJES DE SUJECIÓN</option>
+												<option value="MAQUINARIA">MAQUINARIA</option>
+												<option value="NEGLIGENCIA">NEGLIGENCIA</option>
+												<option value="OBRA ANDE">OBRA ANDE</option>
+												<option value="OBRAS CIVILES">OBRAS CIVILES</option>
+												<option value="OTRA OPERADORA">OTRA OPERADORA</option>
+												<option value="PATCHCORD">PATCHCORD</option>
+												<option value="PELO ROTO">PELO ROTO</option>
+												<option value="PELO ROTO ENCAMINADO EDIFICIO/BARRIO">PELO ROTO ENCAMINADO EDIFICIO/BARRIO</option>
+												<option value="PODA ANDE">PODA ANDE</option>
+												<option value="PODA NORMAL">PODA NORMAL</option>
+												<option value="POSTE ROTO">POSTE ROTO</option>
+												<option value="QUEMAZÓN">QUEMAZÓN</option>
+												<option value="RAMA DE ÁRBOL">RAMA DE ÁRBOL</option>
+												<option value="ROBO">ROBO</option>
+												<option value="SABOTAJE">SABOTAJE</option>
+												<option value="SIN INCONVENIENTES">SIN INCONVENIENTES</option>
+												<option value="SUCIEDAD/MALA CONEXIÓN">SUCIEDAD/MALA CONEXIÓN</option>
+												<option value="TORMENTA">TORMENTA</option>
+												<option value="VEHÍCULO DE GRAN PORTE">VEHÍCULO DE GRAN PORTE</option>
+												<option value="MORDEDURA DE ROEDOR">MORDEDURA DE ROEDOR</option>
+											</select>
+										</td>
+		
+										<td>
+											<input type="number" name="afectacion2" id="afectacion2" size="4" min="0">
+										</td>
+
+										<td>
+											<input type="text" name="comentario2" id="comentario2" size="15">
+										</td>
+
+										<td>
+											<input type="date" name="agendamiento2" id="agendamiento2" min="">
+											<script>
+												document.getElementById("agendamiento2").value = new Date().toISOString().substring(0, 10);
+											</script>
+										</td>
+										
+										<td><button type="reset" id="reset2" class="btn btn-primary">Reset</button></td>
+										<td><button type="submit" form="dataSent" class="btn btn-primary" id="updateQuery" name="updateQuery">Modificar</button></td>
+										
+								</form>
+								</tr>
+
+								{% from '_macro.html' import show_schedule %}
+										
+								{{ show_schedule(result, row, column) }}
+								
+							</tbody>
+						</table>
+
+	
+						
+						</div>
+					</div>
+				</div>
+			</div>
+	
+		<script src="../static/js/jquery.min.js"></script>
+		<script src="../static/js/popper.js"></script>
+		<script src="../static/js/bootstrap.min.js"></script>
+		<script src="../static/js/main.js"></script>
+		<script src="../static/js/multipleSelect.js"></script>
+		<script src="../static/js/display.js"></script>
+		<script src="../static/js/update.js"></script>
+		<script src="../static/js/delete.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Buscar</title>
+<link rel="shortcut icon" type="x icon" href="../static/img/logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+
+    {% from '_macro.html' import validate_search   %}
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <nav>
+        <input type="checkbox" id="check">
+        <label for="check" class="checkbtn">
+            <i class="fas fa-bars"></i>
+        </label>
+        <a href="/" class="enlace">
+            <img src="../static/src/logo.png" alt="" class="logo">
+        </a>
+        <ul>
+
+            <li><a href="/">Regresar</a></li>
+
+        </ul>
+    </nav>
+
+<form action="" method="POST">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+  <div class="form-outline" style="width: 50%; margin: auto;">
+    <input type="search" name="searched" class="form-control" placeholder="Type query" aria-label="Search"/>
+  </div>
+
+</form>
+
+<br>
+{% if row is undefined %}
+  <div class="container-lg" style="width: 50%; margin: auto;">
+    <p class="lead">Ingrese un valor de busqueda!</p>
+  </div>
+{% else %}
+  {% for f in range(row) %}
+      <div class="card" style="width: 50rem; margin: auto;">
+        <div class="card-body">
+          <h5 class="card-title">Ticket: {{ finded[f]['Ticket'] }}, OT: {{ finded[f]['OT'] }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Nap: {{ finded[f]['NAP'] }}</h6>
+          <p class="card-text">Inconveniente: {{ finded[f]['Inconveniente'] }}</p>
+          <p class="card-text">Estado: {{ finded[f]['Estado'] }}</p>
+          <p class="card-text">Fecha de Ingreso: {{ finded[f]['Ingreso'] }}</p>
+          <p class="card-text">Fecha de Cierre: {{ finded[f]['Resolucion'] }}</p>
+          <p class="card-text">Clientes Afectados: {{ finded[f]['Afectacion'] }}</p>
+          <p class="card-text">Ultima modificacion realizada por {{ finded[f]['Usuario'] }}</p>
+          <a href="#" class="card-link">Proximamente...</a>
+          <a href="#" class="card-link">Proximamente...</a>
+          <!-- Fecha de Solucion, Afectados posterior -->
+        </div>
+      </div>
+      <br>
+  {% endfor %}
+{% endif %}
+
+
+</body>
+</html>

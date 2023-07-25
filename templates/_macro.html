@@ -1,0 +1,180 @@
+<!-- Macro para imprimir la tabla en index -->
+{% macro show_table(result, row, column, keys) %}
+    
+    
+    {% for item in result %}
+
+        {% if item['Estado'] == 'Solucionado' %}
+            <tr style="background-color: #c9ffc0;">
+                {% for key in keys %}
+                    <td class="zoom">{{ item[key] }}</td>    
+                {% endfor %}
+            
+            </tr>
+        {% else %}
+            <tr>
+                {% for key in keys %}
+                    <td class="zoom">{{ item[key] }}</td>    
+                {% endfor %}
+            
+            </tr>
+        {% endif %}
+
+    {% endfor %}
+{% endmacro %}
+
+<!-- Macro para imprimir la tabla en admin -->
+{% macro show_users(result, row, column) %}
+    
+    
+    {% for i in range(row) %}
+        <tr id="fila{{ i }}" >
+            {% for j in range(column) %}
+
+                {% if j == 0 %}
+                    <td class="zoom" hidden>{{ result[i][j] }}</td>
+                {% else %}
+                    <td class="zoom">{{ result[i][j] }}</td>
+                {% endif %}
+            {% endfor %}
+
+            <td><input type="image" name="delete" src="../static/img/delete.png" style="width: 20px; height: 20px;"></td>
+            <td><input type="image" name="update" src="../static/img/edit.png" style="width: 20px; height: 20px;"></td>
+        </tr>
+    {% endfor %}
+
+{% endmacro %}
+
+<!-- Macro para imprimir la tabla seleccionable en agenda -->
+{% macro show_schedule(result, row, column) %}
+    
+    {% for i in range(row) %}
+
+        {% if result[i][16] == 'Solucionado' %}
+            <tr id="fila{{ i }}" style="background-color: #c9ffc0;">
+                {% for j in range(column) %}
+
+                    {% if j == 0 %}
+                        <td class="zoom" hidden>{{ result[i][j] }}</td>
+                    {% else %}
+                        <td class="zoom">{{ result[i][j] }}</td>
+                    {% endif %}
+                    
+                {% endfor %}
+                
+                <td><input type="image" name="update" src="../static/img/edit.png" style="width: 20px; height: 20px;"></td>
+                <td><input onclick="myFunction()" type="image" name="delete" src="../static/img/delete.png" style="width: 20px; height: 20px;"></td>
+            </tr>
+        {% else %}
+            <tr id="fila{{ i }}">
+                {% for j in range(column) %}
+
+                    {% if j == 0 %}
+                        <td class="zoom" hidden>{{ result[i][j] }}</td>
+                    {% else %}
+                        <td class="zoom">{{ result[i][j] }}</td>
+                    {% endif %}
+                    
+                {% endfor %}
+                
+                <td><input type="image" name="update" id="update" src="../static/img/edit.png" style="width: 20px; height: 20px;"></td>
+                <td><input onclick="myFunction()" type="image" name="delete" src="../static/img/delete.png" style="width: 20px; height: 20px;"></td>
+            </tr>
+        {% endif %}
+
+    {% endfor %}
+
+{% endmacro %}
+
+<!-- Macro para validaciones en la agenda -->
+{% macro render_schedule(field) %}
+
+        <td>{{ field(**kwargs)|safe }}</td>
+        {% if field.errors %}
+            <ul>
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+{% endmacro %}
+
+{% macro validate_login(field) %}
+
+        <dd>{{ field(**kwargs)|safe }}</dd>
+        {% if field.errors %}
+            <ul>
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+{% endmacro %}
+
+<!-- Macro para enviar correo electronico -->
+{% macro send_message(result, row, column, keys) %}
+    
+    {% for item in result %}
+        {% if item['Estado'] == 'Solucionado' %}
+            <tr style="background-color: #c9ffc0;">
+                {% for key in keys %}
+                    <td>{{ item[key] }}</td>
+                    
+                {% endfor %}
+            </tr>
+        {% else %}
+            <tr>
+                {% for key in keys %}
+                    <td>{{ item[key] }}</td>
+                {% endfor %}
+            </tr>
+        {% endif %}
+
+    {% endfor %}
+
+{% endmacro %}
+
+{% macro validate_search(field) %}
+
+        <dd>{{ field(**kwargs)|safe }}</dd>
+        {% if field.errors %}
+            <ul>
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+{% endmacro %}
+
+{% macro show_distritos(locate, keys, size, temp) %}
+
+    {% for i in range(size) %}
+        <td>
+            <input type="text" name="{{ temp[i] }}" list="{{ i }}" id="{{ temp[i] }}" required>
+            <datalist id="{{ i }}">
+            {% for value in locate[keys[i]] %}
+                <option value="{{ value }}">
+            {% endfor %}
+            </datalist>
+        </td>
+    {% endfor %}
+
+{% endmacro %}
+
+{% macro show_distritos2(locate, keys, size, temp) %}
+
+    {% for i in range(size) %}
+        <td>
+            <input type="text" name="{{ temp[i] }}{{ 2 }}" list="{{ i }}" id="{{ temp[i] }}{{ 2 }}" required>
+            <datalist id="{{ i }}">
+            {% for value in locate[keys[i]] %}
+                <option value="{{ value }}">
+            {% endfor %}
+            </datalist>
+        </td>
+    {% endfor %}
+
+{% endmacro %}

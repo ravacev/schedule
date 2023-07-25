@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Buscar</title>
+<link rel="shortcut icon" type="x icon" href="../static/img/logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+
+    {% from '_macro.html' import validate_search   %}
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <nav>
+        <input type="checkbox" id="check">
+        <label for="check" class="checkbtn">
+            <i class="fas fa-bars"></i>
+        </label>
+        <a href="/" class="enlace">
+            <img src="../static/src/logo.png" alt="" class="logo">
+        </a>
+        <ul>
+
+            <li><a href="/agenda">Regresar</a></li>
+
+        </ul>
+    </nav>
+
+<form name="report" id="report" method="POST">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="form-outline" style="width: 50%; margin: auto; border: 2px groove; padding: 5px;">
+    <h5>Descargar reportes</h5>
+
+    <input type="radio" name="report" id="report" value="1"> Reporte General <br>
+    <input type="radio" name="report" id="report" value="2"> Reporte Dia N + 1 <br>
+    <input type="radio" name="report" id="report" value="3"> Reporte Dia N <br>
+    <input type="radio" name="report" id="report" value="4"> Reporte Semanal <br>
+    <input type="radio" name="report" id="report" value="5"> Descarga General <br>
+
+    <p><input type="submit" value="Descargar"></p>
+  </div>
+
+</form>
+
+<br>
+
+
+</body>
+</html>

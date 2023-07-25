@@ -1,0 +1,46 @@
+{% extends 'base/base.html' %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+
+				<div class="col-md-12">
+					<!-- <h4 class="text-center mb-4">OFS Red</h4> -->
+					<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+					<p>Total: {{ row }}, Pendientes: {{ row - solvedCount }}</p>
+					<div class="table-wrap">
+						<table class="table">
+							<thead class="thead-primary">
+								<!--Aqui se imprime el titulo de la agenda-->
+								<tr>
+									{% for f in stamp %}
+										<th>{{ f }}</th>
+									{% endfor %}
+								</tr>
+							</thead>
+							<tbody>
+								<!--Macro de _macro para imprimir la cantidad de N veces el registro de la agenda-->
+								{% from '_macro.html' import show_table %}
+											
+								{{ show_table(result, row, column, keys) }}
+							</tbody>
+						</table>
+					</div>
+					
+				</div>
+		
+		<footer style="position: absolute;">
+			<div class="container">
+				<div class="row">
+					<p class="copyright text-muted">&copy; Desarrollado por Nicolas Ravetti</p>
+				</div>
+			</div>
+		</footer>
+
+
+
+	<script src="../static/js/jquery.min.js"></script>
+	<script src="../static/js/popper.js"></script>
+	<script src="../static/js/bootstrap.min.js"></script>
+	<script src="../static/js/main.js"></script>
+	<script src="../static/js/display.js"></script>
+{% endblock %}

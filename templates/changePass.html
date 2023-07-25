@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuracion</title>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+  <link rel="stylesheet" href="../static/css/login.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <!-- <script src="../static/js/login.js"></script> -->
+</head>
+<body class="central">
+
+  {% with messages = get_flashed_messages()  %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  
+  <div class="login-form">
+  
+    <form method="POST">
+  
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" id="hidden" value="{{ request.args.get('next', '') }}"/>
+  
+      <h1>Cambiar Contraseña</h1>
+      <div class="content">
+        <div class="input-field">
+          {% from '_macro.html' import validate_login %}
+          {{ validate_login(form.username, placeholder="user", autocomple="nope") }}
+        </div>
+        <div class="input-field">
+          {{ validate_login(form.oldpassword, placeholder="Contraseña Anterior") }}
+        </div>
+        <div class="input-field">
+            {{ validate_login(form.newpassword, placeholder="Contraseña Nueva") }}
+        </div>
+      </div>
+      <div class="action">
+        <!-- <button onclick="window.location.href='/create';" id="create">Register</button> -->
+        <button type="submit">Cambiar</button>
+      </div>
+
+    </form>
+  </div>
+  <!-- partial -->
+
+  <footer>
+      <div class="container">
+          <div class="row">
+              <p class="copyright text-muted">&copy; Desarrollado por Nicolas Ravetti</p>
+          </div>
+      </div>
+  </footer>
+
+</body>
+</html>
