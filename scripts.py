@@ -6,7 +6,7 @@ mydb = mysql.connector.connect(
     host='127.0.0.1',
     user='admin',
     password='password',
-    database='testing',
+    database='schedule',
     autocommit=True
 )
 
