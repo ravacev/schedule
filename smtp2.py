@@ -4,13 +4,13 @@ import email.message
 
 from email.mime.text import MIMEText
 
-def sendEmail(email_content, values, sender):
+def sendEmail(email_content, receiver_email, subject):
 
     server = smtplib.SMTP('smtp.gmail.com: 587')
 
     msg = email.message.Message()
 
-    msg['Subject'] = 'Agenda OFS'
+    msg['Subject'] = subject
 
     msg['From'] = 'redofs01@gmail.com'
 
