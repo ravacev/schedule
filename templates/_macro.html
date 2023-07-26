@@ -48,13 +48,12 @@
 <!-- Macro para imprimir la tabla seleccionable en agenda -->
 {% macro show_schedule(result, keys) %}
     
-    
     {% for item in result %}
 
         {% if item['Estado'] == 'Solucionado' %}
 
             <tr id="fila{{loop.index-1}}" style="background-color: #c9ffc0;">
-                {% for key in keys[-2] %}
+                {% for key in keys[:-2] %}
 
                     {% if key == 'workID' %}
                         <td class="zoom" hidden>{{ item[key] }}</td>

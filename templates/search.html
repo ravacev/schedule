@@ -3,8 +3,23 @@
 <head>
 <title>Buscar</title>
 <link rel="shortcut icon" type="x icon" href="../static/img/logo.png">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="../static/css/style.css">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<title>Modificar Agenda</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="../../static/css/bootstrap.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
 </head>
 <body>
 
@@ -13,19 +28,27 @@
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
     <nav>
-        <input type="checkbox" id="check">
-        <label for="check" class="checkbtn">
-            <i class="fas fa-bars"></i>
-        </label>
-        <a href="/" class="enlace">
-            <img src="../static/src/logo.png" alt="" class="logo">
-        </a>
-        <ul>
+      <input type="checkbox" id="check">
+      <label for="check" class="checkbtn">
+          <i class="fas fa-bars"></i>
+      </label>
+      <a href="/" class="enlace">
+          <img src="../static/src/logo.png" alt="" class="logo">
+      </a>
+      <ul>
+          {% if isadmin == True %}
+            <li><a href="../unaffectedly">Aintech</a></li>
+            <li><a href="../postponed">Postergados</a></li>
+            <li><a href="agenda">Modificar</a></li>
+            <li><a href="../sendSchedule">Enviar</a></li>
+            <li><a href="../download">Descargar</a></li>
+          {% endif %}
 
-            <li><a href="/">Regresar</a></li>
-
-        </ul>
-    </nav>
+          <li><a href="../">Agenda</a></li>
+          <li><a href="/logout">Logout</a></li>
+          
+      </ul>
+  </nav>
 
 <form action="" method="POST">
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -46,12 +69,13 @@
       <div class="card" style="width: 50rem; margin: auto;">
         <div class="card-body">
           <h5 class="card-title">Ticket: {{ finded[f]['Ticket'] }}, OT: {{ finded[f]['OT'] }}</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Nap: {{ finded[f]['Nap'] }}</h6>
+          <h6 class="card-title">Nap: {{ finded[f]['Nap'] }}</h6>
           <p class="card-text">Inconveniente: {{ finded[f]['Inconveniente'] }}</p>
           <p class="card-text">Estado: {{ finded[f]['Estado'] }}</p>
+          <p class="card-text">Motivo: {{ finded[f]['Motivo'] }}</p>
           <p class="card-text">Fecha de Ingreso: {{ finded[f]['Ingreso'] }}</p>
           <p class="card-text">Fecha de Cierre: {{ finded[f]['Resolucion'] }}</p>
-          <p class="card-text">Clientes Afectados: {{ finded[f]['Afectacion'] }}</p>
+          <p class="card-text">Clientes Afectados: {{ finded[f]['Post Afectacion'] }}</p>
           <p class="card-text">Ultima modificacion realizada por {{ finded[f]['Usuario'] }}</p>
           <a href="#" class="card-link">Proximamente...</a>
           <a href="#" class="card-link">Proximamente...</a>

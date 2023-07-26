@@ -23,12 +23,12 @@ import mysql.connector
 
 stamp = ['workID', 'OT', 'Ticket', 'Nap', 'Inconveniente', 'Fase', 'Coordenadas', 'Ingreso', 
           'Pre Afectacion', 'Demora', 'Prioridad', 'Team', 'Cuadrilla', 
-          'Departamento', 'Zona', 'Barrio', 'Estado', 'Resolucion', 
+          'Departamento', 'Ciudad', 'Barrio', 'Estado', 'Resolucion', 
           'Motivo', 'Post Afectacion', 'Comentario', 'Agendamiento','Editar', 'Eliminar']
 
 stamp_index = ['OT', 'Ticket', 'Nap', 'Inconveniente', 'Fase', 'Coordenadas', 'Ingreso', 
           'Pre Afectacion', 'Demora', 'Prioridad', 'Team', 'Cuadrilla', 
-          'Departamento', 'Zona', 'Barrio', 'Estado', 'Resolucion', 
+          'Departamento', 'Ciudad', 'Barrio', 'Estado', 'Resolucion', 
           'Motivo', 'Post Afectacion', 'Comentario']
 
 stamp_mail = ['OT', 'Ticket', 'Nap', 'Inconveniente', 'Coordenadas', 'Ingreso', 'Prioridad',
@@ -85,6 +85,7 @@ def home():
             sql_keys = list()
         else:
             sql_keys = list(result[0].keys())[1::]
+            
         title = 'Agenda'
         return render_template('index.html', title=title, result=result, row=row, column=column, keys=sql_keys, stamp=stamp_index, isadmin=isadmin, solvedCount=solvedCount)
     except mysql.connector.Error as err:
@@ -364,14 +365,16 @@ def base():
 @app.route("/search", methods=['GET', 'POST'])
 def search():
     form = forms.SearchForm(request.form)
+    username = session.get('username')
+    isadmin = user_mgm.isadmin(username)
     if (request.method == 'POST' and form.validate()):
         value = request.form.to_dict()
         finded = hunt.search(value['searched'])
 
         row = len(finded)
-        return render_template('search.html', form=form, finded=finded, row=row)
+        return render_template('search.html', form=form, finded=finded, row=row, isadmin=isadmin)
         
-    return render_template('search.html', form=form)
+    return render_template('search.html', form=form, isadmin=isadmin)
 
 # Crea un objeto csv para reportes
 @app.route("/download", methods=["GET", "POST"])

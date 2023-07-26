@@ -134,7 +134,7 @@ getReportSem = '''
     StatusDesc AS 'Estado', 
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
-    DownUsers AS 'Afectacion',
+    DownUsers AS 'Post Afectacion',
     TicketComment AS 'Comentario'
     FROM work 
     JOIN napDesc, status, crew, descZone
@@ -173,7 +173,7 @@ getSelectN1 = '''
     StatusDesc AS 'Estado', 
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
-    DownUsers AS 'Afectacion',
+    DownUsers AS 'Post Afectacion',
     TicketComment AS 'Comentario'
     FROM work 
     JOIN napDesc, status, crew, descZone
@@ -282,7 +282,7 @@ getReportGen = '''
     StatusDesc AS 'Estado', 
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
-    DownUsers AS 'Afectacion',
+    DownUsers AS 'Post Afectacion',
     TicketComment AS 'Comentario'
     FROM work 
     JOIN napDesc, status, crew, descZone
@@ -316,7 +316,7 @@ getSelectSchedule = '''
     StatusDesc AS 'Estado', 
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
-    DownUsers AS 'Afectacion',
+    DownUsers AS 'Post Afectacion',
     TicketComment AS 'Comentario'
     FROM work 
     JOIN napDesc, status, crew, descZone
@@ -355,7 +355,7 @@ getModifyView = '''
     StatusDesc AS 'Estado', 
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
-    DownUsers AS 'Afectacion',
+    DownUsers AS 'Post Afectacion',
     TicketComment AS 'Comentario',
     DATE_FORMAT(DateSchedule, '%d-%m-%Y') AS 'Agendamiento'
     FROM work 
@@ -399,7 +399,7 @@ UNION
     StatusDesc AS 'Estado', 
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
-    DownUsers AS 'Afectacion',
+    DownUsers AS 'Post Afectacion',
     TicketComment AS 'Comentario',
     DATE_FORMAT(DateSchedule, '%d-%m-%Y') AS 'Agendamiento'
     FROM work 
@@ -442,7 +442,7 @@ getAintechView = '''
     StatusDesc AS 'Estado', 
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
-    DownUsers AS 'Afectacion',
+    DownUsers AS 'Post Afectacion',
     TicketComment AS 'Comentario',
     DATE_FORMAT(DateSchedule, '%d-%m-%Y') AS 'Agendamiento'
     FROM work 
@@ -489,7 +489,7 @@ getReportStatus = '''
     StatusDesc AS 'Estado', 
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
-    DownUsers AS 'Afectacion',
+    DownUsers AS 'Post Afectacion',
     TicketComment AS 'Comentario'
     FROM work 
     JOIN napDesc, status, crew, descZone
@@ -534,7 +534,7 @@ UNION
     StatusDesc AS 'Estado', 
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
-    DownUsers AS 'Afectacion',
+    DownUsers AS 'Post Afectacion',
     TicketComment AS 'Comentario'
     FROM work 
     JOIN napDesc, status, crew, descZone
@@ -576,7 +576,7 @@ getPostergadoView = '''
     StatusDesc AS 'Estado', 
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
-    DownUsers AS 'Afectacion',
+    DownUsers AS 'Post Afectacion',
     TicketComment AS 'Comentario',
     DATE_FORMAT(DateSchedule, '%d-%m-%Y') AS 'Agendamiento'
     FROM work 
@@ -754,7 +754,7 @@ searchAll = '''
 	StatusDesc AS 'Estado', 
 	DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
 	StatusReason AS 'Motivo',
-	DownUsers AS 'Afectacion',
+	DownUsers AS 'Post Afectacion',
     Username AS 'Usuario' FROM work 
 	JOIN napDesc, status, crew, descZone, users
 	WHERE 
@@ -790,7 +790,7 @@ searchTK = '''
     StatusDesc AS 'Estado', 
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
-    DownUsers AS 'Afectacion',
+    DownUsers AS 'Post Afectacion',
     Username AS 'Usuario'
     FROM work 
     JOIN napDesc, status, crew, descZone, users
@@ -829,7 +829,7 @@ searchNAP = '''
     StatusDesc AS 'Estado', 
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
-    DownUsers AS 'Afectacion',
+    DownUsers AS 'Post Afectacion',
     Username AS 'Usuario'
     FROM work 
     JOIN napDesc, status, crew, descZone, users
@@ -870,7 +870,7 @@ searchOT = '''
     StatusDesc AS 'Estado', 
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
-    DownUsers AS 'Afectacion',
+    DownUsers AS 'Post Afectacion',
     Username AS 'Usuario'
     FROM work 
     JOIN napDesc, status, crew, descZone, users
@@ -908,7 +908,7 @@ searchDT = '''SELECT DISTINCT
     StatusDesc AS 'Estado', 
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
-    DownUsers AS 'Afectacion',
+    DownUsers AS 'Post Afectacion',
     Username AS 'Usuario'
     FROM work 
     JOIN napDesc, status, crew, descZone, users
