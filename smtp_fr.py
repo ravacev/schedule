@@ -2,15 +2,13 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-# Send mail for tickets
+# Send mail for schedule
+# Values that will not be changed
 smtp_server = '10.11.11.50'  # Replace with your SMTP server address
 smtp_port = 25  # Replace with the appropriate SMTP port (587 is commonly used for TLS)
 sender_email = 'agenda@personal.com.py'  # Replace with your email address
-sender_password = ''  # Replace with your email password
 
-def sendEmail(body, sender, subject):
-    receiver_email = [sender['Email']]  # Replace with your email address
-    
+def sendEmail(body, receiver_email, subject):
     msg = MIMEMultipart()
     msg['From'] = sender_email
     msg['To'] = ','.join(receiver_email)

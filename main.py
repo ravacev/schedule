@@ -109,11 +109,12 @@ def modf():
                     flash(success_message)
                     
                 else:
-                    
                     email_message = render_template('resume_mail.html', values=values)
-                    sender = user_mgm.authenticator(session['username'])
-                    smtp2.sendEmail(email_message, values, sender)
-                    # smtp3.sendEmail(email_message, values, sender)
+                    receiver_email = user_mgm.authenticator(session['username'])
+                    subject = f'Caso transferido a {values["team"]}. OT: {values["id_ot"]}, Ticket: {values["num_ticket"]}'
+                    print(receiver_email)
+                    smtp2.sendEmail(email_message, receiver_email, subject)
+                    # smtp3.sendEmail(email_message, receiver_email, subject)
                     return redirect(url_for('modf'))
             if ('updateQuery' in request.form):
                 values = request.form.to_dict()
@@ -259,6 +260,14 @@ def modfDelete(jobData):
 def sendSchedule():
 
     row, result, column, resume = work_querys.email_send()
+    
+    receiver_email = ["AgendayConfirmacion@personal.com.py","InternetCorporativo@personal.com.py",
+            "MesadeayudaDEC@personal.com.py","OPERADORES_DE_HOJA_DE_RUTA@personal.com.py",
+            "OPERADORES_DE_SOPORTE@personal.com.py","CC_INTERNET@personal.com.py",
+            "Soluciones_Tecnologicas@personal.com.py","OFS_Red@personal.com.py"]
+    
+    subject = 'Agenda OFS'
+    
     values = sender = ''
     
     if not result:
@@ -270,8 +279,8 @@ def sendSchedule():
     send_time = send_time.strftime("%d/%m/%Y, %H:%M:%S")
     
     email_message = render_template('sendSchedule.html', resume=resume, result=result, row=row, column=column, stamp=stamp_mail, send_time=send_time, keys=mail_keys)
-    smtp2.sendEmail(email_message)
-    # smtp.sendEmail(email_message)
+    smtp2.sendEmail(email_message, values, sender)
+    # smtp.sendEmail(email_message, receiver_email, subject)
     return redirect(url_for('modf'))
 
 @app.route("/update")
