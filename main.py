@@ -34,8 +34,6 @@ stamp_index = ['OT', 'Ticket', 'Nap', 'Inconveniente', 'Fase', 'Coordenadas', 'I
 stamp_mail = ['OT', 'Ticket', 'Nap', 'Inconveniente', 'Coordenadas', 'Ingreso', 'Pre Afectacion', 'Demora', 'Prioridad'
               ,'Team', 'Cuadrilla', 'Zona', 'Estado', 'Fecha de Resolucion', 'Motivo']
 
-data_mail = ['id_ot', 'num_ticket', 'datePicker', 'fase', 'name_nap', 'affect_clients', 'coord']
-
 work_querys = Work()
 user_mgm = UserSetting()
 hunt = Searching()
@@ -243,7 +241,6 @@ def logout():
 @csrf_token.exempt
 def modfDelete(jobData):
     jobData = json.loads(jobData)
-    print(jobData)
     
     work_querys.deleteWork(jobData[2], session['_user_id'])
     
