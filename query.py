@@ -57,7 +57,9 @@ class Work(Database):
         self.connection.close()
         
         self.connection.reconnect()
-        self.cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor(dictionary=True)
+        # self.cursor = self.connection.cursor()
+
         self.cursor.execute(getModifyView)
         result = list(self.cursor.fetchall())
         
@@ -76,7 +78,7 @@ class Work(Database):
         self.connection.close()
         
         self.connection.reconnect()
-        self.cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor(dictionary=True)
         self.cursor.execute(getAintechView)
         result = list(self.cursor.fetchall())
         
@@ -95,7 +97,7 @@ class Work(Database):
         self.connection.close()
         
         self.connection.reconnect()
-        self.cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor(dictionary=True)
         self.cursor.execute(getPostergadoView)
         result = list(self.cursor.fetchall())
         

@@ -21,6 +21,7 @@
 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
 </head>
 <body>
+
 	<script>
 		if ( window.history.replaceState ) {
 			window.history.replaceState( null, null, window.location.href );
@@ -65,7 +66,7 @@
 					{% endwith %}
 						<div class="table-wrap">
 							
-							<table class="table">
+							<table class="table" id="myTable">
 								
 							<thead class="thead-primary">
 								
@@ -73,7 +74,13 @@
 							<!--Aqui se imprime el titulo de la agenda-->
 							<tr>
 								{% for f in stamp %}
-									<th >{{ f }}</th>
+
+									{% if f == 'workID' %}
+										<th hidden>{{ f }}</th>
+									{% else %}
+										<th >{{ f }}</th>
+									{% endif %}
+									
 								{% endfor %}
 							</tr>
 							</thead>
@@ -419,7 +426,7 @@
 
 								{% from '_macro.html' import show_schedule %}
 										
-								{{ show_schedule(result, row, column) }}
+								{{ show_schedule(result, stamp) }}
 	
 							</tbody>
 						</table>

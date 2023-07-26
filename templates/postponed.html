@@ -72,7 +72,13 @@
 							<!--Aqui se imprime el titulo de la agenda-->
 							<tr>
 								{% for f in stamp %}
-									<th>{{ f }}</th>
+
+									{% if f == 'workID' %}
+										<th hidden>{{ f }}</th>
+									{% else %}
+										<th >{{ f }}</th>
+									{% endif %}
+									
 								{% endfor %}
 							</tr>
 							</thead>
@@ -415,7 +421,7 @@
 
 								{% from '_macro.html' import show_schedule %}
 										
-								{{ show_schedule(result, row, column) }}
+								{{ show_schedule(result, stamp) }}
 								
 							</tbody>
 						</table>

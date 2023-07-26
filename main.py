@@ -21,7 +21,7 @@ import json
 import mysql.connector
 
 
-stamp = ['OT', 'Ticket', 'Nap', 'Inconveniente', 'Fase', 'Coordenadas', 'Ingreso', 
+stamp = ['workID', 'OT', 'Ticket', 'Nap', 'Inconveniente', 'Fase', 'Coordenadas', 'Ingreso', 
           'Pre Afectacion', 'Demora', 'Prioridad', 'Team', 'Cuadrilla', 
           'Departamento', 'Zona', 'Barrio', 'Estado', 'Resolucion', 
           'Motivo', 'Post Afectacion', 'Comentario', 'Agendamiento','Editar', 'Eliminar']
@@ -267,8 +267,6 @@ def sendSchedule():
             "Soluciones_Tecnologicas@personal.com.py","OFS_Red@personal.com.py"]
     
     subject = 'Agenda OFS'
-    
-    values = sender = ''
     
     if not result:
         mail_keys = list()

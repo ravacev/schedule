@@ -46,44 +46,45 @@
 {% endmacro %}
 
 <!-- Macro para imprimir la tabla seleccionable en agenda -->
-{% macro show_schedule(result, row, column) %}
+{% macro show_schedule(result, keys) %}
     
-    {% for i in range(row) %}
+    
+    {% for item in result %}
 
-        {% if result[i][16] == 'Solucionado' %}
-            <tr id="fila{{ i }}" style="background-color: #c9ffc0;">
-                {% for j in range(column) %}
+        {% if item['Estado'] == 'Solucionado' %}
 
-                    {% if j == 0 %}
-                        <td class="zoom" hidden>{{ result[i][j] }}</td>
+            <tr id="fila{{loop.index-1}}" style="background-color: #c9ffc0;">
+                {% for key in keys[-2] %}
+
+                    {% if key == 'workID' %}
+                        <td class="zoom" hidden>{{ item[key] }}</td>
                     {% else %}
-                        <td class="zoom">{{ result[i][j] }}</td>
-                    {% endif %}
-                    
+                        <td class="zoom">{{ item[key] }}</td>
+                    {% endif %}   
                 {% endfor %}
-                
+
                 <td><input type="image" name="update" src="../static/img/edit.png" style="width: 20px; height: 20px;"></td>
                 <td><input onclick="myFunction()" type="image" name="delete" src="../static/img/delete.png" style="width: 20px; height: 20px;"></td>
             </tr>
         {% else %}
-            <tr id="fila{{ i }}">
-                {% for j in range(column) %}
 
-                    {% if j == 0 %}
-                        <td class="zoom" hidden>{{ result[i][j] }}</td>
+            <tr id="fila{{loop.index-1}}">
+                {% for key in keys[:-2] %}
+
+                    {% if key == 'workID' %}
+                        <td class="zoom" hidden>{{ item[key] }}</td>
                     {% else %}
-                        <td class="zoom">{{ result[i][j] }}</td>
-                    {% endif %}
-                    
+                        <td class="zoom">{{ item[key] }}</td>
+                    {% endif %}   
+
                 {% endfor %}
-                
-                <td><input type="image" name="update" id="update" src="../static/img/edit.png" style="width: 20px; height: 20px;"></td>
+
+                <td><input type="image" name="update" src="../static/img/edit.png" style="width: 20px; height: 20px;"></td>
                 <td><input onclick="myFunction()" type="image" name="delete" src="../static/img/delete.png" style="width: 20px; height: 20px;"></td>
             </tr>
         {% endif %}
 
     {% endfor %}
-
 {% endmacro %}
 
 <!-- Macro para validaciones en la agenda -->
