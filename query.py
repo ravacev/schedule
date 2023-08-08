@@ -386,7 +386,10 @@ class UserSetting(Database):
         self.connection.reconnect()
         self.cursor = self.connection.cursor()
         
-        self.cursor.execute(f''' UPDATE users SET Username = {self.values['username']} WHERE UsersID = {self.values['UsersID']} ''')
+        sql = ''' UPDATE users SET Username = %s WHERE UsersID = %s '''
+        val = (self.values['username'], self.values['UsersID'])
+        
+        self.cursor.execute(sql, val)
         self.connection.commit()
     
     def change_pass(self, username, oldpass, newpass):

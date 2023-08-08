@@ -23,6 +23,7 @@ import json
 import mysql.connector
 
 
+# SQL Keywords for printing list titles and values
 stamp = ['workID', 'OT', 'Ticket', 'Nap', 'Inconveniente', 'Fase', 'Coordenadas', 'Ingreso', 
           'Pre Afectacion', 'Demora', 'Prioridad', 'Team', 'Cuadrilla', 
           'Departamento', 'Ciudad', 'Barrio', 'Estado', 'Resolucion', 
@@ -35,10 +36,13 @@ stamp_index = ['OT', 'Ticket', 'Nap', 'Inconveniente', 'Fase', 'Coordenadas', 'I
 
 stamp_mail = ['OT', 'Ticket', 'Nap', 'Inconveniente', 'Coordenadas', 'Ingreso', 'Pre Afectacion', 'Demora', 'Prioridad'
               ,'Team', 'Cuadrilla', 'Zona', 'Estado', 'Fecha de Resolucion', 'Motivo']
+# 
 
+# Initialized objects for printing values, managament users and search results respectively 
 work_querys = Work()
 user_mgm = UserSetting()
 hunt = Searching()
+# 
 
 app=Flask(__name__)
 
@@ -49,6 +53,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+# Script to initialize user model with User Mixin and function to load user model
 users = user_create()
 
 @login_manager.user_loader
@@ -57,6 +62,7 @@ def load_user(user_id):
         if user.id == int(user_id):
             return user
     return None
+# 
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -72,7 +78,7 @@ def before_request():
 def after_request(response):
     return response
 
-#Menu principal de la app, unicamente visualizacion
+# Main menu to show the values of the tasks
 @app.route('/')
 @login_required
 def home():
@@ -91,8 +97,9 @@ def home():
     except mysql.connector.Error as err:
         print("Something went wrong: {}".format(err))
         return render_template('error.html')
+# 
 
-#Modulo agenda para agregar los casos
+# Module to handle tasks and views
 @app.route("/agenda/",methods = ['GET', 'POST'])
 @login_required
 @admin_required
@@ -101,14 +108,19 @@ def modf():
     try:
         comment_form = forms.CommentForm(request.form)
         if ( request.method == 'POST' and comment_form.validate() ):
-                
+            
+            # If statement to Insert or Update query parameters
             if ('insertQuery' in request.form):
+                
+                # Extract values from POST method to dictionary and then validate if the task is already in the database
                 values = request.form.to_dict()
                 validate = work_querys.insertWork(values, session['_user_id'])
+                
                 if validate == 0:
                     success_message = 'Ticket u OT duplicado.'
                     flash(success_message)
                 else:
+                    # Send email notification when insert a new task via smtp mail service
                     email_message = render_template('resume_mail.html', values=values)
                     receiver_email = user_mgm.authenticator(session['username'])
                     receiver_email = [receiver_email['Email']]
@@ -120,8 +132,11 @@ def modf():
             if ('updateQuery' in request.form):
                 values = request.form.to_dict()
                 work_querys.updateWork(values, session['_user_id'])
+            # 
 
         row, result, column, solvedCount = work_querys.modifyView()
+        
+        # Charge the values for the list of City, State and Downtown
         locate, keys, size, temp = localidades()
         
         title = 'Modificar agenda'
@@ -129,8 +144,9 @@ def modf():
     except mysql.connector.Error as err:
         print("Something went wrong: {}".format(err))
         return render_template('error.html', error = err)
+# 
     
-#Modulo agenda para actualizar los casos de aintech
+# Module to handle the case with 'Aintech' partner
 @app.route("/unaffectedly/",methods = ['GET', 'POST'])
 @login_required
 @admin_required
@@ -161,8 +177,9 @@ def unaffectedly():
     except mysql.connector.Error as err:
         print("Something went wrong: {}".format(err))
         return render_template('error.html', error = err)
+# 
     
-#Modulo agenda para actualizar los casos postergados
+# Module to handle 'Postponed' cases where the Partner is not 'Aintech'
 @app.route("/postponed/",methods = ['GET', 'POST'])
 @login_required
 @admin_required
@@ -193,8 +210,9 @@ def postponed():
     except mysql.connector.Error as err:
         print("Something went wrong: {}".format(err))
         return render_template('error.html', error = err)
+# 
 
-#Modulo Login
+# Module to login user with password and reset password
 @app.route("/login/", methods=['GET', 'POST'])
 def login():
     login_form = forms.LoginForm(request.form)
@@ -220,8 +238,9 @@ def login():
             
     title = 'Login'
     return render_template('login.html', form=login_form, title=title)
+# 
 
-#Modulo Logout
+# Logout module user
 @app.route("/logout/")
 @login_required
 def logout():
@@ -235,8 +254,9 @@ def logout():
         session.pop('password')
         session.clear()
     return redirect(url_for('login'))
+# 
 
-#Modulo para extraer dato por JSON para DELETE
+# Delete task with a JSON call via http request
 @app.route("/agenda/<string:jobData>", methods=['POST'])
 @login_required
 @admin_required
@@ -247,8 +267,9 @@ def modfDelete(jobData):
     work_querys.deleteWork(jobData[2], session['_user_id'])
     
     return redirect(url_for('modf'))
+# 
 
-# Modulo enviar correo de la agenda
+# Send schedule via email with smtp
 @app.route("/sendSchedule")
 @login_required
 @admin_required
@@ -275,14 +296,17 @@ def sendSchedule():
     smtp2.sendEmail(email_message, receiver_email, subject)
     # send_smtp.sendEmail(email_message, receiver_email, subject)
     return redirect(url_for('modf'))
+# 
 
+# In development
 @app.route("/update")
 @login_required
 @csrf_token.exempt
 def ajax_login():
     return render_template('update.html')
+# 
 
-#Modulo para visualizar los usuarios de la base de datos
+# View registered users in application and update their values
 @app.route("/admin", methods=["GET", "POST"])
 @login_required
 @admin_required
@@ -303,8 +327,9 @@ def admin():
     except mysql.connector.Error as err:
         print("Something went wrong: {}".format(err))
         return render_template('error.html', error = err)
+#
 
-#Modulo para crear usuarios
+# Create a new user and password for application
 @app.route("/admin/create", methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -332,8 +357,9 @@ def create_user():
             
     title = 'Login'
     return render_template('create.html', form=create_form, title=title)
+#
 
-#Modulo para cambio de contraseña del usuario
+# Change password for all users in the database
 @app.route("/change", methods=['GET', 'POST'])
 def change_pass():
     try:
@@ -348,6 +374,7 @@ def change_pass():
             success_message = 'Su contraseña ha sido modificada con exito {}'.format(username)
             flash(success_message)
             
+            # Reload models for users in User Mixin
             global users
             users = user_create()     
             
@@ -358,18 +385,21 @@ def change_pass():
             
     title = 'Login'
     return render_template('changePass.html', form=change_form, title=title)
+# 
 
 @app.context_processor
 def base():
     form = forms.SearchForm()
     return dict(form=form)
 
-# Modulo para busqueda por Ticket, OT, NAP y Fecha
+# Search tasks by Ticket, OT, NAP and Date
 @app.route("/search", methods=['GET', 'POST'])
 def search():
+    
     form = forms.SearchForm(request.form)
     username = session.get('username')
     isadmin = user_mgm.isadmin(username)
+    
     if (request.method == 'POST' and form.validate()):
         value = request.form.to_dict()
         finded = hunt.search(value['searched'])
@@ -378,8 +408,9 @@ def search():
         return render_template('search.html', form=form, finded=finded, row=row, isadmin=isadmin)
         
     return render_template('search.html', form=form, isadmin=isadmin)
+# 
 
-# Crea un objeto csv para reportes
+# Create an object in csv format to reports
 @app.route("/download", methods=["GET", "POST"])
 def download():
     option = request.form.get('report')
@@ -388,12 +419,15 @@ def download():
         return work_querys.download(option)
 
     return render_template('reports.html')
+# 
 
-# Formulario para cargar datos
+# In development
 @app.route("/charge", methods=["GET", "POST"])
 def charge():
     return render_template('charge.html')
+# 
 
+# Charts view for dinamically reports
 @app.route("/charts")
 def charts():
     
@@ -449,6 +483,7 @@ def charts():
         anual=anual,
         month=month
     )
+# 
     
 if __name__ == '__main__':
     #DEBUG is SET to TRUE. CHANGE FOR PROD
