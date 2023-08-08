@@ -51,17 +51,42 @@
 						<thead class="thead-primary">
 						<!--Aqui se imprime el titulo de la agenda-->
 						<tr>
-							{% for f in tlusers%}
-								<th>{{ f }}</th>
+							{% for f in keys %}
+
+								{% if f == 'UsersID' %}
+									<th hidden>{{ f }}</th>
+								{% else %}
+									<th >{{ f }}</th>
+								{% endif %}
+								
 							{% endfor %}
 						</tr>
 						</thead>    
 						<tbody>
-						
                             <!--Macro de _macro para imprimir la cantidad de N veces el registro de la agenda-->
-                            {% from '_macro.html' import show_users %}
+
+							<tr id="data">
+								
+								<form name="dataSent" id="dataSent" method="POST">
+									<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+									<td hidden>
+										<input type="text" name="UsersID" id="UsersID" size="5" readonly>
+									</td>
+	
+									<td><input type="text" name="username" id="username"></td>
+									<td><input type="email" name="email" id="email"></td>
+									<td><input type="number" name="admin" id="admin"></td>
+
+									
+									<td><button type="reset" id="reset" class="btn btn-primary">Reset</button></td>
+									<td><button type="submit" form="dataSent" class="btn btn-primary" id="updateQuery" name="updateQuery">Modificar</button></td>
+								</form>
+							</tr>
+
+							{% from '_macro.html' import show_users %}
                                         
-                            {{ show_users(users, row, column) }}
+                            {{ show_users(users, keys) }}
                         </tbody>
 					</table>
 					</div>
@@ -79,5 +104,9 @@
 		</footer>
 
 	</section>
+
+	<script src="../static/js/display_users.js"></script>
+	<script src="../static/js/update_users.js"></script>
+
 </body>
 </html>

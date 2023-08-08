@@ -10,3 +10,10 @@ def writeLog(logs, iduser, action):
         
     f.write(message)
     f.close()
+    
+def temp_file(debug_text):
+    f = open('debug.txt', 'w')
+    message = f'''---> {debug_text} '''
+    
+    f.write(message)
+    f.close()

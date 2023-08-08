@@ -13,6 +13,8 @@ from flask_login import login_required, LoginManager, logout_user, current_user,
 from flask_wtf import CSRFProtect
 from query import Work, UserSetting, Searching
 from scripts import user_create
+from calendar import month_name
+from logs import temp_file
 
 import pandas as pd
 import smtp4, smtp2, smtp3, send_smtp
@@ -281,17 +283,26 @@ def ajax_login():
     return render_template('update.html')
 
 #Modulo para visualizar los usuarios de la base de datos
-@app.route("/admin")
+@app.route("/admin", methods=["GET", "POST"])
 @login_required
 @admin_required
 def admin():
     users = user_mgm.select_user()
-    tlusers = ['Username', 'Email', 'Admin', 'Created Date', 'Eliminar', 'Editar']
+    keys = ['UsersID', 'Username', 'Email', 'Admin', 'Editar', 'Eliminar']
     
-    row = len(users)
-    column = len(tlusers) - 1
+    try:
+        if ( request.method == 'POST' ):
+                
+            if ('updateQuery' in request.form):
+                values = request.form.to_dict()
+                user_mgm.update_user(values)
     
-    return render_template('admin.html', tlusers=tlusers, users=users, row=row, column=column)
+                return redirect(url_for('admin'))
+
+        return render_template('admin.html', keys=keys, users=users)
+    except mysql.connector.Error as err:
+        print("Something went wrong: {}".format(err))
+        return render_template('error.html', error = err)
 
 #Modulo para crear usuarios
 @app.route("/admin/create", methods=['GET', 'POST'])
@@ -382,6 +393,62 @@ def download():
 @app.route("/charge", methods=["GET", "POST"])
 def charge():
     return render_template('charge.html')
+
+@app.route("/charts")
+def charts():
+    
+    anual_per_case, month_per_team = work_querys.chartjs()
+    month_lookup = list(month_name)
+    case_lookup = ['Correctivo', 'Preventivo']
+    
+    # Define plot data for anual case
+    keys = anual_per_case[0].keys()
+
+    anual = dict().fromkeys(keys)
+    anual.update({'len_chart': None})
+    
+    for i, key in enumerate(keys, 0):
+        anual[key] = [anual_per_case[i][key] for i in range(len(anual_per_case))]
+        
+        if key == 'type_case':
+            anual[key] = list(set(anual_per_case[i][key] for i in range(len(anual_per_case))))
+            anual[key] = sorted(anual[key], key=case_lookup.index)
+            
+        if key == 'month_name':
+            anual[key] = list(set(anual_per_case[i][key] for i in range(len(anual_per_case))))
+            anual[key] = sorted(anual[key], key=month_lookup.index)
+    len_chart = int(len(anual['count_total']) / len(anual['type_case']))
+    anual.update({'len_chart': len_chart})
+    
+    # Define plot data for month case
+    keys = month_per_team[0].keys()
+    
+    team_lookup = ['Aintech', 'Bulls', 'Dunkel', 'Hansa', 'Hansa INT', 'Nucleo']
+
+    month = dict().fromkeys(keys)
+    
+    for i, key in enumerate(keys, 0):
+        month[key] = [month_per_team[i][key] for i in range(len(month_per_team))]
+        
+        if key == 'type_case':
+            month[key] = list(set(month_per_team[i][key] for i in range(len(month_per_team))))
+            month[key] = sorted(month[key], key=case_lookup.index)
+            
+        if key == 'month_name':
+            month[key] = list(set(month_per_team[i][key] for i in range(len(month_per_team))))
+            
+        if key == 'team':
+            month[key] = list(set(month_per_team[i][key] for i in range(len(month_per_team))))
+            month[key] = sorted(month[key], key=team_lookup.index)
+            
+    temp_file(month)
+        
+    # Return the components to the HTML template
+    return render_template(
+        template_name_or_list='charts_view.html',
+        anual=anual,
+        month=month
+    )
     
 if __name__ == '__main__':
     #DEBUG is SET to TRUE. CHANGE FOR PROD

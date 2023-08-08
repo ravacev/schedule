@@ -1,5 +1,31 @@
 [
     {
-        
+        "team": "Nucleo",
+        "cuadrillas": ["Christian Riveros","Miguel Pintos","Claudio Ramirez", "Gustavo Caceres", "Gaspar Monges"]
+    },
+
+    {
+        "team": "Hansa",
+        "cuadrillas": ["Cesar Pestana", "Ronald Ruiz", "Omar Ozuna", "Jorge Allende","Adolfo Allende","Juan Medina","Osvaldo Vazquez","Ricardo Prieto", "Ivan Rusconi"]
+    },
+
+    {
+        "team": "Hansa INT",
+        "cuadrillas": ["Derlis Arguello", "Hugo Talavera" , "Anderson Corrales", "Rafael Urunaga", "Arnaldo Martinez","Roni Aguilera","Gabriel Lopez","Blas Gonzalez","Loemgrim Lisboa"]
+    },
+
+    {
+        "team": "Bulls",
+        "cuadrillas": ["Ovidio Fernandez","Rodrigo Miranda"]
+    },
+
+    {
+        "team": "Dunkel",
+        "cuadrillas": ["Roberto Ayala", "Haniel Espinola"]
+    },
+
+    {
+        "team": "Aintech",
+        "cuadrillas": ["Carlos Benitez", "Aldo Aguilera", "Victor Caceres", "Cesar Candia", "Lider Martinez", "Victor Rolon", "Mario Ramirez", "Gustavo Pereira", "Victor Benega", "Juan Galvalisi"]
     }
 ]

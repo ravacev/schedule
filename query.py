@@ -3,7 +3,7 @@ import datetime
 from flask import send_file
 from mysql_querys import getSelectSchedule, PutUpdateSchedule, InsertStatus, InsertNap, InsertCrew, InsertWork, InsertZone, getResumeSelect
 from mysql_querys import getReportSem, searchTK, searchNAP, searchOT, getSumN, searchDT, getSelectN1, getSelectN, searchAll, getModifyView, sumModifyView, sumReportStatus, getReportStatus
-from mysql_querys import getPostergadoView, sumPostergadoView, getAintechView, sumAintechView, getReportGen
+from mysql_querys import getPostergadoView, sumPostergadoView, getAintechView, sumAintechView, getReportGen, work_type_per_case, work_type_per_team
 from models import check_password, create_password
 import pandas as pd
 from logs import writeLog
@@ -311,8 +311,18 @@ class Work(Database):
         self.mycursor.execute(sql, val)
         self.connection.commit()
         
-    def data():
-        pass
+    def chartjs(self):
+        self.connection.reconnect()
+        self.cursor = self.connection.cursor(dictionary=True)
+        self.cursor.execute(work_type_per_case)
+        anual_per_case = self.cursor.fetchall()
+        
+        self.connection.reconnect()
+        self.cursor = self.connection.cursor(dictionary=True)
+        self.cursor.execute(work_type_per_team)
+        month_per_team = self.cursor.fetchall()
+        
+        return anual_per_case, month_per_team
 
 class UserSetting(Database):
     def __init__(self):
@@ -364,11 +374,20 @@ class UserSetting(Database):
 
     def select_user(self):
         self.connection.reconnect()
-        self.cursor = self.connection.cursor()
-        self.cursor.execute(''' SELECT UsersID, Username, Email, IsAdmin, DATE_FORMAT(CreatedDate, '%d-%m-%Y') FROM users WHERE username <> 'adminofs' ''')
+        self.cursor = self.connection.cursor(dictionary=True)
+        self.cursor.execute(''' SELECT UsersID, Username, Email, IsAdmin AS 'Admin' FROM users WHERE username <> 'adminofs' ''')
         users = (self.cursor.fetchall())
         
         return users
+    
+    def update_user(self, values):
+        self.values = values
+        
+        self.connection.reconnect()
+        self.cursor = self.connection.cursor()
+        
+        self.cursor.execute(f''' UPDATE users SET Username = {self.values['username']} WHERE UsersID = {self.values['UsersID']} ''')
+        self.connection.commit()
     
     def change_pass(self, username, oldpass, newpass):
         self.username = username

@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <link rel="shortcut icon" type="x icon" href="../static/img/logo.png">
+    <script src="../static/js/cdn.jsdelivr.net_npm_chart.js"></script>
+    <script src="../static/js/cdn.bokeh.org_bokeh_release_bokeh-3.0.1.min.js"></script>
+    <title>Chartjs</title>
+</head>
+ 
+<style>
+    div {
+        height: 50vh;
+        width: auto;
+        border: 1px solid black;
+    }
+
+    .parent { 
+        display: grid; 
+        grid-template-columns: 1fr 1fr; 
+        grid-gap: 20px; 
+        border: 1px solid black; 
+        width: auto; 
+    } 
+
+    .container { 
+        margin: 10px; 
+        border: 1px solid red; 
+    }
+
+</style>
+
+<body>
+
+    <div class="parent">
+        <div class="container">
+            <canvas id="myChart"></canvas>
+        </div>
+    
+        <div class="container">
+            <canvas id="Chart" ></canvas>
+        </div>
+    </div>
+
+
+
+    <script>
+        // Create chat for Cantidad Mensual de Tareas x Tipo de Caso
+        const labels = {{ anual.month_name | tojson }};
+ 
+        const data = {
+            labels: labels,
+            datasets: [
+                {
+                    label: {{ anual.type_case[0] | tojson }},
+                    backgroundColor: ["#00CC00"],
+                    data: {{ anual.count_total[:anual.len_chart] | tojson }},
+                }, {
+                    label: {{ anual.type_case[1] | tojson }},
+                    backgroundColor: ["#FF8000"],
+                    data: {{ anual.count_total[anual.len_chart:] | tojson }},
+                }
+            ]
+        };
+ 
+        const config = {
+            type: 'bar',
+            data: data,
+            options: { 
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Cantidad Mensual de Tareas x Tipo de Caso',
+                    }
+                }
+            }
+        };
+ 
+        new Chart(
+            document.getElementById('myChart').getContext('2d'),
+            config
+        );
+
+
+        // Create chat for Cantidad Mensual de Tareas x Tipo de Caso
+        const labels2 = {{ month.team | tojson }};
+ 
+        const data2 = {
+            labels: labels2,
+            datasets: [
+                {
+                    label: {{ month.type_case[0] | tojson }},
+                    backgroundColor: ["#00CC00"],
+                    data: {{ month.count_total[:5] | tojson }},
+                }, {
+                    label: {{ month.type_case[1] | tojson }},
+                    backgroundColor: ["#FF8000"],
+                    data: {{ month.count_total[5:] | tojson }},
+                }
+            ]
+        };
+ 
+        const config2 = {
+            type: 'bar',
+            data: data2,
+            options: { 
+                indexAxis: 'y',
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Cantidad de Tareas x Tipo de Caso x Team',
+                    }
+                }
+            }
+        };
+ 
+        new Chart(
+            document.getElementById('Chart').getContext('2d'),
+            config2
+        );
+
+        
+ 
+    </script>
+
+</body>
+</html>

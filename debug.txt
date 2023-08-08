@@ -1,0 +1,1 @@
+---> {'month_name': None, 'count_total': None, 'team': None, 'type_case': None} 

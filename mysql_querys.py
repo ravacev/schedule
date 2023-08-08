@@ -952,3 +952,41 @@ getResumeSelect = '''
     DATE_FORMAT(DateSchedule, '%d-%m-%Y') = DATE_FORMAT(curdate(), '%d-%m-%Y')
     GROUP BY statusDesc
 '''
+
+
+work_type_per_case = """
+SELECT
+date_format(DateDone, "%M") AS 'month_name', 
+count(*) AS 'count_total',
+IF(AffectClients > 0, 'Correctivo', 'Preventivo') AS 'type_case'
+FROM
+work
+WHERE
+DateDone BETWEEN '2023-01-01 00:00:00' AND CURDATE()
+GROUP BY type_case, month_name
+ORDER BY type_case, DateDone;
+"""
+
+work_type_per_team = """
+SELECT
+date_format(DateDone, "%M") AS 'month_name', 
+count(*) AS 'count_total',
+Crew AS 'team',
+IF(AffectClients > 0, 'Correctivo', 'Preventivo') AS 'type_case'
+FROM
+work
+JOIN
+crew, status
+WHERE
+work.CrewCode = crew.CrewCode
+AND
+work.StatusCode = status.StatusCode
+AND
+crew.Crew <> ''
+AND
+status.StatusDesc = 'SOLUCIONADO'
+AND
+DATE_FORMAT(DateDone, '%Y-%m-%d') BETWEEN DATE_FORMAT(NOW(), '%Y-%m-01') AND curdate()
+GROUP BY team, type_case
+ORDER BY type_case, team;
+"""
