@@ -25,7 +25,7 @@ sumAintechView = '''
     
 sumModifyView = '''
     SELECT DISTINCT 
-	COUNT(*)
+	COUNT(*) AS Cuenta
     FROM work 
     JOIN napDesc, status, crew, descZone
     WHERE 

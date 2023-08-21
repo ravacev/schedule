@@ -48,27 +48,36 @@ class Work(Database):
         return send_file('reporte.csv', as_attachment=True)
 
     def modifyView(self): 
+        
+        # Extract the count of total records with today date
         self.connection.reconnect()
-        self.cursor = self.connection.cursor()
+        
+        self.cursor = self.connection.cursor(dictionary=True)
         self.cursor.execute(sumModifyView)
-        row = list(self.cursor.fetchone())
-        row.extend(self.cursor.fetchone())
-        solvedCount = row[1]
+        
+        row = self.cursor.fetchall()
+        solvedCount = row[1]['Cuenta']
+        
         self.connection.close()
         
+        # Extract the values with today date
         self.connection.reconnect()
         self.cursor = self.connection.cursor(dictionary=True)
-        # self.cursor = self.connection.cursor()
-
         self.cursor.execute(getModifyView)
         result = list(self.cursor.fetchall())
+
+        # Check if the value is not null
+        aux = 0        
+        for value in row:
+            aux += value['Cuenta']
+            
         
-        if row is None:
+        if aux == 0:
             column = 0
         else:
             column = len(result[0])
-
-        return sum(row), result, column, solvedCount
+        
+        return aux, result, column, solvedCount
     
     def unaffectedly(self): 
         self.connection.reconnect()
@@ -113,7 +122,7 @@ class Work(Database):
         self.cursor = self.connection.cursor()
         self.cursor.execute(sumReportStatus)
         row = list(self.cursor.fetchone())
-        # row.extend(self.cursor.fetchone())
+        
         next = self.cursor.fetchone()
         if next is None:
             solvedCount = 0
@@ -126,7 +135,6 @@ class Work(Database):
         self.cursor = self.connection.cursor(dictionary=True)
         self.cursor.execute(getReportStatus)
         result = (self.cursor.fetchall())
-        # column = len(result[0])
         
         if sum(row) == 0:
             column = 0
@@ -205,8 +213,12 @@ class Work(Database):
                 self.values['team'] = 'Bulls'
             elif self.values['team'] == "5":
                 self.values['team'] = 'Dunkel'
-            else:
+            elif self.values['team'] == "6":
                 self.values['team'] = 'Aintech'
+            elif self.values['team'] == "7":
+                self.values['team'] = 'Hansa NOC'
+            elif self.values['team'] == "8":
+                self.values['team'] = 'Hansa INT NOC'
             
             val = (self.values['team'], self.values['cuadrilla'])
             self.mycursor.execute(InsertCrew, val)
@@ -281,8 +293,12 @@ class Work(Database):
             self.values['team2'] = 'Bulls'
         elif self.values['team2'] == "5":
             self.values['team2'] = 'Dunkel'
-        else:
+        elif self.values['team2'] == "6":
             self.values['team2'] = 'Aintech'
+        elif self.values['team2'] == "7":
+            self.values['team2'] = 'Hansa NOC'
+        elif self.values['team2'] == "8":
+            self.values['team2'] = 'Hansa INT NOC'
             
         if self.values['agendamiento2'] == '':
             self.values['agendamiento2'] = None

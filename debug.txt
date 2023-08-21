@@ -1,1 +1,1 @@
----> {'month_name': None, 'count_total': None, 'team': None, 'type_case': None} 
+---> {'month_name': ['August'], 'count_total': [4, 4, 55, 48, 38, 59, 5, 2, 7, 3], 'team': ['Aintech', 'Bulls', 'Dunkel', 'Hansa', 'Hansa INT', 'Nucleo'], 'type_case': ['Correctivo', 'Preventivo']} 

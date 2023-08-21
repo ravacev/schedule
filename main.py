@@ -403,6 +403,8 @@ def search():
     if (request.method == 'POST' and form.validate()):
         value = request.form.to_dict()
         finded = hunt.search(value['searched'])
+        
+        print(finded)
 
         row = len(finded)
         return render_template('search.html', form=form, finded=finded, row=row, isadmin=isadmin)

@@ -4,6 +4,8 @@ var cuadrilla_3=new Array("-","Derlis Arguello", "Hugo Talavera" , "Anderson Cor
 var cuadrilla_4=new Array("-","Ovidio Fernandez","Rodrigo Miranda");
 var cuadrilla_5=new Array("-","Roberto Ayala", "Haniel Espinola")
 var cuadrilla_6=new Array("-","Carlos Benitez", "Aldo Aguilera", "Victor Caceres", "Cesar Candia", "Lider Martinez", "Victor Rolon", "Mario Ramirez", "Gustavo Pereira", "Victor Benega", "Juan Galvalisi")
+var cuadrilla_7=new Array("-","Cesar Pestana", "Ronald Ruiz", "Omar Ozuna", "Jorge Allende","Adolfo Allende","Juan Medina","Osvaldo Vazquez","Ricardo Prieto", "Ivan Rusconi");
+var cuadrilla_8=new Array("-","Derlis Arguello", "Hugo Talavera" , "Anderson Corrales", "Rafael Urunaga", "Arnaldo Martinez","Roni Aguilera","Gabriel Lopez","Blas Gonzalez","Loemgrim Lisboa");
 
 var todascuadrilla = [
    [],
@@ -12,7 +14,9 @@ var todascuadrilla = [
    cuadrilla_3,
    cuadrilla_4,
    cuadrilla_5,
-   cuadrilla_6
+   cuadrilla_6,
+   cuadrilla_7,
+   cuadrilla_8
 ];
 
 function cambia_cuadrilla(){ 
