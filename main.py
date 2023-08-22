@@ -49,6 +49,7 @@ app=Flask(__name__)
 csrf_token = CSRFProtect(app)
 app.secret_key = 'mysecretkey'
 
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -404,8 +405,6 @@ def search():
         value = request.form.to_dict()
         finded = hunt.search(value['searched'])
         
-        print(finded)
-
         row = len(finded)
         return render_template('search.html', form=form, finded=finded, row=row, isadmin=isadmin)
         
@@ -429,6 +428,32 @@ def charge():
     return render_template('charge.html')
 # 
 
+@app.route("/re_update", methods=["GET", "POST"])
+@login_required
+@admin_required
+def re_update():
+    
+    tast_ticket = request.args.get("task_ticket")
+    result = hunt.search(tast_ticket)
+    
+    try:
+        comment_form = forms.CommentForm(request.form)
+        if ( request.method == 'POST' and comment_form.validate() ):
+            
+            if ('updateQuery' in request.form):
+                values = request.form.to_dict()
+                work_querys.updateWork(values, session['_user_id'])
+                return redirect(url_for('search'))
+            # 
+        
+        # Charge the values for the list of City, State and Downtown
+        locate, keys, size, temp = localidades()
+        
+        return render_template('re_update.html', result=result, stamp=stamp, form=comment_form, locate=locate, keys=keys, size=size, temp=temp)
+    except mysql.connector.Error as err:
+        print("Something went wrong: {}".format(err))
+        return render_template('error.html', error = err)
+    
 # Charts view for dinamically reports
 @app.route("/charts")
 def charts():

@@ -48,6 +48,27 @@
 
 {% endmacro %}
 
+{% macro show_edit(result, keys) %}
+    {% for item in result %}
+
+            <tr id="fila{{loop.index-1}}">
+                {% for key in keys[:-2] %}
+
+                    {% if key == 'workID' %}
+                        <td class="zoom" hidden>{{ item[key] }}</td>
+                    {% else %}
+                        <td class="zoom">{{ item[key] }}</td>
+                    {% endif %}   
+
+                {% endfor %}
+
+                <td><input type="image" name="update" src="../static/img/edit.png" style="width: 20px; height: 20px;"></td>
+                <td><input onclick="myFunction()" type="image" name="delete" src="../static/img/delete.png" style="width: 20px; height: 20px;"></td>
+            </tr>
+
+    {% endfor %}
+{% endmacro %}
+
 <!-- Macro para imprimir la tabla seleccionable en agenda -->
 {% macro show_schedule(result, keys) %}
     

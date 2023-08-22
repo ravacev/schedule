@@ -791,6 +791,8 @@ searchTK = '''
     DATE_FORMAT(DateDone, '%d-%m-%Y') AS 'Resolucion', 
     StatusReason AS 'Motivo',
     DownUsers AS 'Post Afectacion',
+    TicketComment AS 'Comentario',
+    DATE_FORMAT(DateSchedule, '%d-%m-%Y') AS 'Agendamiento',
     Username AS 'Usuario'
     FROM work 
     JOIN napDesc, status, crew, descZone, users

@@ -19,7 +19,7 @@ var select_index = new Array("", "Nucleo", "Hansa", "Hansa INT", "Bulls", "Dunke
 
 var todascuadrilla = [
    [],
-   cuadrilla_1,w
+   cuadrilla_1,
    cuadrilla_2,
    cuadrilla_3,
    cuadrilla_4,

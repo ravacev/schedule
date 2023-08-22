@@ -79,7 +79,10 @@
           <p class="card-text">Fecha de Cierre: {{ finded[f]['Resolucion'] }}</p>
           <p class="card-text">Post Afectacion: {{ finded[f]['Post Afectacion'] }}</p>
           <p class="card-text">Ultima modificacion realizada por {{ finded[f]['Usuario'] }}</p>
-          <a href="#" class="card-link">Proximamente...</a>
+          {% if isadmin == True %}
+            <a href="{{ url_for('re_update', task_ticket=finded[f]['Ticket']) }}" class="card-link">Modificar Tarea</a>
+          {% endif %}
+
           <a href="#" class="card-link">Proximamente...</a>
           <!-- Fecha de Solucion, Afectados posterior -->
         </div>
